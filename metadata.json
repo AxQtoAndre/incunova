@@ -1,0 +1,8 @@
+{
+  "name": "Remix Remix IncubaESP",
+  "description": "Monitoreo y control inteligente de incubadoras automáticas basadas en ESP32 por WiFi local.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
