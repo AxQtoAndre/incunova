@@ -6,6 +6,31 @@ const KEY_INTERVALO = 'incubaesp_intervalo_consulta_v3';
 const KEY_SILENCIO = 'incubaesp_silencio_alarmas_v3';
 const KEY_PERFILES_CUSTOM = 'incubaesp_perfiles_custom_v3';
 const KEY_HISTORIAL_PREFIX = 'incubaesp_historial_v3_';
+const KEY_TEMA_OSCURO = 'incubaesp_tema_oscuro_v1';
+
+export function getTemaOscuroStorage(): boolean {
+  try {
+    const raw = localStorage.getItem(KEY_TEMA_OSCURO);
+    if (raw !== null) {
+      return JSON.parse(raw);
+    }
+    // Si no está guardado, verificar preferencia del sistema
+    if (typeof window !== 'undefined' && window.matchMedia) {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+    return false;
+  } catch {
+    return false;
+  }
+}
+
+export function saveTemaOscuroStorage(oscuro: boolean): void {
+  try {
+    localStorage.setItem(KEY_TEMA_OSCURO, JSON.stringify(oscuro));
+  } catch (err) {
+    console.error(err);
+  }
+}
 
 // Limpieza de claves previas de versiones anteriores con datos de demo
 if (typeof window !== 'undefined') {

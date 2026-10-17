@@ -141,6 +141,8 @@ class BleConnectionManager {
         : {
             filters: [
               { services: [BLE_UUIDS.SERVICE] },
+              { namePrefix: 'incuNOVA' },
+              { namePrefix: 'IncuNOVA' },
               { namePrefix: 'Incubanova' },
               { namePrefix: 'IncubaESP' },
               { namePrefix: 'Incuba' },
@@ -153,7 +155,7 @@ class BleConnectionManager {
 
       return {
         deviceId: device.id,
-        deviceName: device.name || nombreSugerido || 'Incubadora ESP32 BLE',
+        deviceName: device.name || nombreSugerido || 'incuNOVA ESP32 BLE',
         bluetoothDevice: device,
       };
     } catch (err: any) {

@@ -93,11 +93,11 @@ export const SettingsTab: React.FC<Props> = ({
     setEscaneando(true);
 
     try {
-      const res = await bleManager.solicitarDispositivo(nombre || 'IncubaESP BLE', verTodos);
+      const res = await bleManager.solicitarDispositivo(nombre || 'incuNOVA BLE', verTodos);
       setBluetoothDeviceTemp(res.bluetoothDevice);
       setDeviceIdTemp(res.deviceId);
       if (!nombre) {
-        setNombre(res.deviceName || 'Incubadora ESP32');
+        setNombre(res.deviceName || 'incuNOVA ESP32');
       }
       setEsSimulada(false);
       setMostrarForm(true);

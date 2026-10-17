@@ -18,6 +18,8 @@ import {
   saveIncubadorasStorage,
   getSilencioStorage,
   saveSilencioStorage,
+  getTemaOscuroStorage,
+  saveTemaOscuroStorage,
   getPerfilesStorage,
   savePerfilesCustomStorage,
   getHistorialStorage,
@@ -54,6 +56,8 @@ export default function App() {
 
   // Ajustes del sistema
   const [silenciado, setSilenciado] = useState<boolean>(() => getSilencioStorage());
+  // Modo guardia nocturna (tema oscuro opcional para baja luz)
+  const [temaOscuro, setTemaOscuro] = useState<boolean>(() => getTemaOscuroStorage());
 
   // Datos - Inicia completamente vacío por requerimiento
   const [perfiles, setPerfiles] = useState<PerfilEspecie[]>(() => getPerfilesStorage());
@@ -83,6 +87,20 @@ export default function App() {
 
   const handleToggleSilencio = () => {
     setSilenciado((prev) => !prev);
+  };
+
+  // Inicializar y persistir modo guardia nocturna (tema oscuro)
+  useEffect(() => {
+    saveTemaOscuroStorage(temaOscuro);
+    if (temaOscuro) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [temaOscuro]);
+
+  const handleToggleTemaOscuro = () => {
+    setTemaOscuro((prev) => !prev);
   };
 
   // Sincronizar configuraciones guardadas con el estado en memoria
@@ -613,8 +631,8 @@ export default function App() {
     : undefined;
 
   return (
-    <div className="min-h-screen bg-[#FAF6F0] text-stone-900 font-sans antialiased flex flex-col selection:bg-[#E05A36]/20 selection:text-[#E05A36]">
-      {/* Cabecera persistente */}
+    <div className="min-h-screen bg-[#FAF6F0] dark:bg-stone-950 text-stone-900 dark:text-stone-100 font-sans antialiased flex flex-col selection:bg-[#E05A36]/20 selection:text-[#E05A36] transition-colors duration-200">
+      {/* Cabecera persistente con soporte de guardia nocturna */}
       <Header
         tabActiva={tabActiva}
         onCambiarTab={setTabActiva}
@@ -624,6 +642,8 @@ export default function App() {
         haySimuladas={haySimuladas}
         conAlertas={incubadorasEnAlerta.length > 0}
         onNuevaIncubadora={() => setTabActiva('config')}
+        temaOscuro={temaOscuro}
+        onToggleTemaOscuro={handleToggleTemaOscuro}
       />
 
       {/* Contenido principal según pestaña */}
@@ -645,21 +665,21 @@ export default function App() {
 
             {/* Caso 1: Aún no hay incubadoras registradas (ESTADO VACÍO REQUERIDO) */}
             {incubadorasConfigs.length === 0 ? (
-              <div className="bg-white rounded-3xl p-8 sm:p-12 text-center border border-stone-200/90 shadow-xs max-w-xl mx-auto my-6 animate-in fade-in zoom-in-95 duration-200">
-                <div className="w-16 h-16 rounded-3xl bg-[#FFF2EB] text-[#E05A36] flex items-center justify-center mx-auto mb-4 shadow-xs">
+              <div className="bg-white dark:bg-stone-900 rounded-3xl p-8 sm:p-12 text-center border border-stone-200/90 dark:border-stone-800 shadow-xs max-w-xl mx-auto my-6 animate-in fade-in zoom-in-95 duration-200">
+                <div className="w-16 h-16 rounded-3xl bg-[#FFF2EB] dark:bg-[#E05A36]/20 text-[#E05A36] flex items-center justify-center mx-auto mb-4 shadow-xs">
                   <Egg className="w-8 h-8" />
                 </div>
-                <h3 className="text-xl sm:text-2xl font-black text-stone-900 tracking-tight">
+                <h3 className="text-xl sm:text-2xl font-black text-stone-900 dark:text-stone-100 tracking-tight">
                   Aún no tienes incubadoras conectadas
                 </h3>
-                <p className="text-xs sm:text-sm text-stone-500 mt-2 mb-6 max-w-md mx-auto leading-relaxed">
+                <p className="text-xs sm:text-sm text-stone-500 dark:text-stone-400 mt-2 mb-6 max-w-md mx-auto leading-relaxed">
                   Para comenzar a monitorear la temperatura, humedad y volteo automático, empareja tu primer módulo ESP32 por Bluetooth Low Energy (BLE) o configura una unidad de simulación.
                 </p>
 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
                   <button
                     onClick={() => setTabActiva('config')}
-                    className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-[#E05A36] hover:bg-[#C84724] text-white text-xs sm:text-sm font-bold transition shadow-sm active:scale-95"
+                    className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-[#E05A36] hover:bg-[#C84724] text-white text-xs sm:text-sm font-bold transition shadow-sm active:scale-95 cursor-pointer"
                   >
                     <Plus className="w-4 h-4" />
                     <span>Conectar nueva incubadora</span>
@@ -667,9 +687,9 @@ export default function App() {
 
                   <button
                     onClick={() => setTabActiva('guia')}
-                    className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs sm:text-sm font-bold transition"
+                    className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-300 text-xs sm:text-sm font-bold transition cursor-pointer"
                   >
-                    <BookOpen className="w-4 h-4 text-stone-500" />
+                    <BookOpen className="w-4 h-4 text-stone-500 dark:text-stone-400" />
                     <span>Ver Guía de uso</span>
                   </button>
                 </div>
@@ -703,9 +723,9 @@ export default function App() {
                     })}
                   </div>
                 ) : (
-                  <div className="bg-white rounded-3xl p-10 text-center border border-stone-200/80 shadow-xs max-w-lg mx-auto">
-                    <h3 className="text-base font-bold text-stone-800">No se encontraron resultados</h3>
-                    <p className="text-xs text-stone-500 mt-1 mb-5">
+                  <div className="bg-white dark:bg-stone-900 rounded-3xl p-10 text-center border border-stone-200/80 dark:border-stone-800 shadow-xs max-w-lg mx-auto">
+                    <h3 className="text-base font-bold text-stone-800 dark:text-stone-100">No se encontraron resultados</h3>
+                    <p className="text-xs text-stone-500 dark:text-stone-400 mt-1 mb-5">
                       No hay incubadoras que coincidan con el filtro "{filtroActual}" o el término de búsqueda.
                     </p>
                     <button
@@ -713,7 +733,7 @@ export default function App() {
                         setFiltroActual('TODAS');
                         setBusqueda('');
                       }}
-                      className="px-4 py-2 rounded-xl bg-stone-100 text-stone-700 hover:bg-stone-200 text-xs font-bold transition"
+                      className="px-4 py-2 rounded-xl bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700 text-xs font-bold transition cursor-pointer"
                     >
                       Restablecer filtros
                     </button>
@@ -768,13 +788,13 @@ export default function App() {
       )}
 
       {/* Pie de página cálido y sobrio */}
-      <footer className="border-t border-stone-200/60 bg-[#F5EFE6]/60 py-6 text-center text-xs text-stone-500">
+      <footer className="border-t border-stone-200/60 dark:border-stone-800/80 bg-[#F5EFE6]/60 dark:bg-stone-900/60 py-6 text-center text-xs text-stone-500 dark:text-stone-400 transition-colors duration-200">
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <div className="font-medium text-stone-600">
-            <strong>IncubaESP</strong> • Sistema de Telemetría y Control BLE para Incubadoras Automáticas ESP32
+          <div className="font-medium text-stone-600 dark:text-stone-300">
+            <strong>incuNOVA</strong> • Sistema de Telemetría y Control BLE para Incubadoras Automáticas ESP32
           </div>
-          <div className="text-[11px] text-stone-600">
-            Web Bluetooth GATT • PWA Instalable • Sin datos precargados
+          <div className="text-[11px] text-stone-600 dark:text-stone-400">
+            Web Bluetooth GATT • PWA Instalable • Guardia Nocturna Opcional
           </div>
         </div>
       </footer>

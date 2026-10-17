@@ -1,6 +1,6 @@
 {
-  "name": "Remix Remix IncubaESP",
-  "description": "Monitoreo y control inteligente de incubadoras automáticas basadas en ESP32 por WiFi local.",
+  "name": "incuNOVA",
+  "description": "Monitoreo y control inteligente de incubadoras automáticas basadas en ESP32 por Web Bluetooth BLE.",
   "requestFramePermissions": [],
   "majorCapabilities": [
     "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"

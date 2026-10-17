@@ -14,9 +14,9 @@ export default defineConfig(() => {
         includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'icon.svg'],
         manifest: {
           id: '/',
-          name: 'IncubaESP — Incubadoras Automáticas',
-          short_name: 'IncubaESP',
-          description: 'Monitoreo y control inteligente de incubadoras automáticas basadas en ESP32 por WiFi local.',
+          name: 'incuNOVA — Incubadoras Automáticas',
+          short_name: 'incuNOVA',
+          description: 'Monitoreo y control inteligente de incubadoras automáticas basadas en ESP32 por Web Bluetooth con incuNOVA.',
           theme_color: '#E05A36',
           background_color: '#FAF6F0',
           display: 'standalone',

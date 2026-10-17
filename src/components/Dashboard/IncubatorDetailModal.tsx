@@ -169,14 +169,14 @@ export const IncubatorDetailModal: React.FC<Props> = ({
       className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/60 backdrop-blur-xs overflow-y-auto"
       onClick={() => setSensorTooltipActivo(null)}
     >
-      <div className="relative w-full max-w-4xl max-h-[92vh] flex flex-col rounded-3xl bg-white shadow-2xl border border-stone-200 overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+      <div className="relative w-full max-w-4xl max-h-[92vh] flex flex-col rounded-3xl bg-white dark:bg-stone-900 shadow-2xl border border-stone-200 dark:border-stone-800 overflow-hidden animate-in fade-in zoom-in-95 duration-150 text-stone-900 dark:text-stone-100">
         {/* Cabecera del modal */}
-        <div className="flex items-center justify-between px-5 sm:px-6 py-4 border-b border-stone-100 bg-[#FAF6F0]">
+        <div className="flex items-center justify-between px-5 sm:px-6 py-4 border-b border-stone-100 dark:border-stone-800 bg-[#FAF6F0] dark:bg-stone-850 dark:bg-stone-800">
           <div className="flex items-center gap-3">
             <span className="text-2xl">{perfil?.icono || '🥚'}</span>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-lg sm:text-xl font-bold text-stone-900">{incubadora.nombre}</h2>
+                <h2 className="text-lg sm:text-xl font-bold text-stone-900 dark:text-stone-100">{incubadora.nombre}</h2>
                 <span
                   className={`px-2.5 py-0.5 rounded-full text-xs font-black border ${getEstadoBadgeClass(
                     sensores?.estado
@@ -185,7 +185,7 @@ export const IncubatorDetailModal: React.FC<Props> = ({
                   {sensores?.estado || 'DESCONECTADO'}
                 </span>
               </div>
-              <p className="text-xs text-stone-500 font-mono">
+              <p className="text-xs text-stone-500 dark:text-stone-400 font-mono">
                 {incubadora.esSimulada
                   ? 'Modo: Simulación en memoria'
                   : `BLE Device: ${incubadora.deviceId?.slice(0, 10) || 'ESP32-GATT'} • Estado: ${incubadora.estadoConexion || (incubadora.enLinea ? 'conectado' : 'desconectado')}`}{' '}
@@ -196,7 +196,7 @@ export const IncubatorDetailModal: React.FC<Props> = ({
           </div>
           <button
             onClick={onClose}
-            className="rounded-full p-2 text-stone-400 hover:bg-stone-200/60 hover:text-stone-700 transition"
+            className="rounded-full p-2 text-stone-400 hover:bg-stone-200/60 dark:hover:bg-stone-700 hover:text-stone-700 dark:hover:text-stone-200 transition cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -206,8 +206,8 @@ export const IncubatorDetailModal: React.FC<Props> = ({
         <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-6">
           {/* Alerta de Divergencia Térmica (> 1.5°C) */}
           {divergenciaSensores && (
-            <div className="rounded-2xl bg-amber-50 border-2 border-amber-300 p-4 text-xs sm:text-sm text-amber-900 flex items-start gap-3">
-              <ShieldAlert className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+            <div className="rounded-2xl bg-amber-50 dark:bg-amber-950/50 border-2 border-amber-300 dark:border-amber-700 p-4 text-xs sm:text-sm text-amber-900 dark:text-amber-200 flex items-start gap-3">
+              <ShieldAlert className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
               <div>
                 <strong className="font-bold">Alerta de Verificación de Sensores:</strong> Se detectó una diferencia de{' '}
                 <span className="font-bold font-mono">
@@ -220,18 +220,18 @@ export const IncubatorDetailModal: React.FC<Props> = ({
           )}
 
           {/* BARRA DE COMUNICACIÓN Y SINCRONIZACIÓN BLE */}
-          <div className="rounded-3xl border border-stone-200 bg-[#FFFDFB] p-4 sm:p-5 shadow-xs">
+          <div className="rounded-3xl border border-stone-200 dark:border-stone-800 bg-[#FFFDFB] dark:bg-stone-800/80 p-4 sm:p-5 shadow-xs transition-colors">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center">
+                  <div className="w-7 h-7 rounded-xl bg-sky-50 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400 flex items-center justify-center">
                     <Bluetooth className="w-4 h-4" />
                   </div>
-                  <h3 className="text-sm sm:text-base font-bold text-stone-900">
+                  <h3 className="text-sm sm:text-base font-bold text-stone-900 dark:text-stone-100">
                     Sincronización con ESP32 (GATT BLE)
                   </h3>
                 </div>
-                <p className="text-xs text-stone-500 mt-0.5">
+                <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
                   Transfiere los valores ideales del perfil ({perfil?.temperatura}°C, {perfil?.humedadNormal}% HR, {perfil?.diasTotales} días) a la memoria EEPROM/Preferences del microcontrolador.
                 </p>
               </div>
@@ -263,31 +263,31 @@ export const IncubatorDetailModal: React.FC<Props> = ({
                       setEditandoDia(true);
                     }}
                     disabled={!enLinea}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 disabled:opacity-50 text-stone-700 text-xs font-bold transition cursor-pointer disabled:cursor-not-allowed"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-stone-100 dark:bg-stone-700/80 hover:bg-stone-200 dark:hover:bg-stone-700 disabled:opacity-50 text-stone-700 dark:text-stone-300 text-xs font-bold transition cursor-pointer disabled:cursor-not-allowed"
                   >
-                    <Clock className="w-3.5 h-3.5 text-stone-500" />
+                    <Clock className="w-3.5 h-3.5 text-stone-500 dark:text-stone-400" />
                     <span>Día {sensores?.dia_incubacion || 1} (Ajustar)</span>
                   </button>
                 ) : (
-                  <div className="flex items-center gap-1.5 bg-stone-100 p-1 rounded-xl">
-                    <span className="text-xs text-stone-600 font-bold pl-1.5">Día:</span>
+                  <div className="flex items-center gap-1.5 bg-stone-100 dark:bg-stone-700 p-1 rounded-xl">
+                    <span className="text-xs text-stone-600 dark:text-stone-300 font-bold pl-1.5">Día:</span>
                     <input
                       type="number"
                       min="1"
                       max={sensores?.dias_totales || 99}
                       value={inputDia}
                       onChange={(e) => setInputDia(parseInt(e.target.value, 10) || 1)}
-                      className="w-14 px-2 py-0.5 text-xs bg-white border border-stone-300 rounded font-bold font-mono"
+                      className="w-14 px-2 py-0.5 text-xs bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-600 text-stone-900 dark:text-stone-100 rounded font-bold font-mono"
                     />
                     <button
                       onClick={handleGuardarDia}
-                      className="px-2 py-0.5 bg-emerald-600 text-white text-xs font-bold rounded hover:bg-emerald-700 transition"
+                      className="px-2 py-0.5 bg-emerald-600 text-white text-xs font-bold rounded hover:bg-emerald-700 transition cursor-pointer"
                     >
                       OK
                     </button>
                     <button
                       onClick={() => setEditandoDia(false)}
-                      className="px-1.5 py-0.5 text-stone-500 text-xs font-bold hover:text-stone-700"
+                      className="px-1.5 py-0.5 text-stone-500 dark:text-stone-400 text-xs font-bold hover:text-stone-700 dark:hover:text-stone-200 cursor-pointer"
                     >
                       ✕
                     </button>
@@ -297,7 +297,7 @@ export const IncubatorDetailModal: React.FC<Props> = ({
                 <button
                   onClick={handleResetearDia}
                   disabled={!enLinea}
-                  className="px-2.5 py-1.5 rounded-xl bg-stone-100 hover:bg-rose-50 hover:text-rose-700 disabled:opacity-50 text-stone-600 text-xs font-bold transition cursor-pointer disabled:cursor-not-allowed"
+                  className="px-2.5 py-1.5 rounded-xl bg-stone-100 dark:bg-stone-700/80 hover:bg-rose-50 dark:hover:bg-rose-950/60 hover:text-rose-700 dark:hover:text-rose-300 disabled:opacity-50 text-stone-600 dark:text-stone-300 text-xs font-bold transition cursor-pointer disabled:cursor-not-allowed"
                   title="Reiniciar contador a Día 1"
                 >
                   Reset a Día 1
@@ -306,8 +306,8 @@ export const IncubatorDetailModal: React.FC<Props> = ({
             </div>
 
             {sincronizadoExito && (
-              <div className="mt-3 p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center gap-2 animate-in fade-in">
-                <Check className="w-4 h-4 text-emerald-600 shrink-0" />
+              <div className="mt-3 p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 text-xs flex items-center gap-2 animate-in fade-in">
+                <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
                 <span>
                   ¡Parámetros de especie sincronizados correctamente en la memoria interna del ESP32!
                 </span>
@@ -317,37 +317,37 @@ export const IncubatorDetailModal: React.FC<Props> = ({
 
           {/* ESTADO EN VIVO DE LOS 4 ACTUADORES */}
           <div>
-            <h3 className="text-sm font-bold text-stone-700 mb-3 flex items-center gap-2">
+            <h3 className="text-sm font-bold text-stone-700 dark:text-stone-300 mb-3 flex items-center gap-2">
               <Cpu className="w-4 h-4 text-[#E05A36]" />
               Estado de los Actuadores en Vivo
             </h3>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {/* PTC Calefactor */}
-              <div className="rounded-2xl bg-stone-50 border border-stone-200 p-3.5 flex flex-col justify-between">
-                <div className="flex items-center justify-between text-xs font-semibold text-stone-600">
+              <div className="rounded-2xl bg-stone-50 dark:bg-stone-800/80 border border-stone-200 dark:border-stone-700/80 p-3.5 flex flex-col justify-between">
+                <div className="flex items-center justify-between text-xs font-semibold text-stone-600 dark:text-stone-400">
                   <span className="flex items-center gap-1.5">
                     <Flame className="w-4 h-4 text-rose-500" />
                     PTC Cerámico
                   </span>
                   <span
                     className={`w-2.5 h-2.5 rounded-full ${
-                      sensores?.salidas.ptc ? 'bg-rose-500 animate-ping' : 'bg-stone-300'
+                      sensores?.salidas.ptc ? 'bg-rose-500 animate-ping' : 'bg-stone-300 dark:bg-stone-600'
                     }`}
                   />
                 </div>
                 <div className="mt-2">
-                  <div className="text-base font-bold text-stone-800">
+                  <div className="text-base font-bold text-stone-800 dark:text-stone-100">
                     {sensores?.salidas.ptc ? 'ENCENDIDO' : 'APAGADO'}
                   </div>
-                  <div className="text-[11px] text-stone-500 font-mono mt-0.5">
+                  <div className="text-[11px] text-stone-500 dark:text-stone-400 font-mono mt-0.5">
                     PID Salida: {sensores?.pid.salida ?? 0}%
                   </div>
                 </div>
               </div>
 
               {/* Ventilador PWM */}
-              <div className="rounded-2xl bg-stone-50 border border-stone-200 p-3.5 flex flex-col justify-between">
-                <div className="flex items-center justify-between text-xs font-semibold text-stone-600">
+              <div className="rounded-2xl bg-stone-50 dark:bg-stone-800/80 border border-stone-200 dark:border-stone-700/80 p-3.5 flex flex-col justify-between">
+                <div className="flex items-center justify-between text-xs font-semibold text-stone-600 dark:text-stone-400">
                   <span className="flex items-center gap-1.5">
                     <Fan
                       className={`w-4 h-4 text-sky-500 ${
@@ -357,13 +357,13 @@ export const IncubatorDetailModal: React.FC<Props> = ({
                     />
                     Ventilador
                   </span>
-                  <span className="text-[11px] font-mono font-bold text-sky-600">
+                  <span className="text-[11px] font-mono font-bold text-sky-600 dark:text-sky-400">
                     {sensores?.salidas.ventilador ?? 0}% PWM
                   </span>
                 </div>
                 <div className="mt-2">
-                  <div className="text-base font-bold text-stone-800">Circulación Activa</div>
-                  <div className="w-full h-1.5 bg-stone-200 rounded-full mt-1.5 overflow-hidden">
+                  <div className="text-base font-bold text-stone-800 dark:text-stone-100">Circulación Activa</div>
+                  <div className="w-full h-1.5 bg-stone-200 dark:bg-stone-700 rounded-full mt-1.5 overflow-hidden">
                     <div
                       className="h-full bg-sky-500 rounded-full"
                       style={{ width: `${sensores?.salidas.ventilador ?? 0}%` }}
@@ -373,31 +373,31 @@ export const IncubatorDetailModal: React.FC<Props> = ({
               </div>
 
               {/* Humidificador ultrasónico */}
-              <div className="rounded-2xl bg-stone-50 border border-stone-200 p-3.5 flex flex-col justify-between">
-                <div className="flex items-center justify-between text-xs font-semibold text-stone-600">
+              <div className="rounded-2xl bg-stone-50 dark:bg-stone-800/80 border border-stone-200 dark:border-stone-700/80 p-3.5 flex flex-col justify-between">
+                <div className="flex items-center justify-between text-xs font-semibold text-stone-600 dark:text-stone-400">
                   <span className="flex items-center gap-1.5">
                     <Waves className="w-4 h-4 text-teal-500" />
                     Humidificador
                   </span>
                   <span
                     className={`w-2.5 h-2.5 rounded-full ${
-                      sensores?.salidas.humidificador ? 'bg-teal-500 animate-pulse' : 'bg-stone-300'
+                      sensores?.salidas.humidificador ? 'bg-teal-500 animate-pulse' : 'bg-stone-300 dark:bg-stone-600'
                     }`}
                   />
                 </div>
                 <div className="mt-2">
-                  <div className="text-base font-bold text-stone-800">
+                  <div className="text-base font-bold text-stone-800 dark:text-stone-100">
                     {sensores?.salidas.humidificador ? 'ACTIVO (VAPOR)' : 'REPOSO'}
                   </div>
-                  <div className="text-[11px] text-stone-500 font-mono mt-0.5">
+                  <div className="text-[11px] text-stone-500 dark:text-stone-400 font-mono mt-0.5">
                     Set: {sensores?.setpoint_hum ?? 50}% HR
                   </div>
                 </div>
               </div>
 
               {/* Motor de Volteo */}
-              <div className="rounded-2xl bg-stone-50 border border-stone-200 p-3.5 flex flex-col justify-between">
-                <div className="flex items-center justify-between text-xs font-semibold text-stone-600">
+              <div className="rounded-2xl bg-stone-50 dark:bg-stone-800/80 border border-stone-200 dark:border-stone-700/80 p-3.5 flex flex-col justify-between">
+                <div className="flex items-center justify-between text-xs font-semibold text-stone-600 dark:text-stone-400">
                   <span className="flex items-center gap-1.5">
                     <RotateCw
                       className={`w-4 h-4 text-amber-500 ${
@@ -409,16 +409,16 @@ export const IncubatorDetailModal: React.FC<Props> = ({
                   <button
                     onClick={handleGirar}
                     disabled={girando || !enLinea}
-                    className="text-[10px] bg-stone-200 hover:bg-stone-300 px-1.5 py-0.5 rounded font-bold transition"
+                    className="text-[10px] bg-stone-200 dark:bg-stone-700 hover:bg-stone-300 dark:hover:bg-stone-600 text-stone-700 dark:text-stone-300 px-1.5 py-0.5 rounded font-bold transition cursor-pointer"
                   >
                     Probar
                   </button>
                 </div>
                 <div className="mt-2">
-                  <div className="text-base font-bold text-stone-800">
+                  <div className="text-base font-bold text-stone-800 dark:text-stone-100">
                     {sensores?.salidas.motor ? 'GIRANDO...' : 'REPOSO'}
                   </div>
-                  <div className="text-[11px] text-stone-500 font-mono mt-0.5">
+                  <div className="text-[11px] text-stone-500 dark:text-stone-400 font-mono mt-0.5">
                     DRV8825 Pasos
                   </div>
                 </div>
@@ -427,11 +427,11 @@ export const IncubatorDetailModal: React.FC<Props> = ({
           </div>
 
           {/* CONTROL MANUAL DE ACTUADORES */}
-          <div className="rounded-3xl border border-stone-200 bg-white p-4 sm:p-5 shadow-xs">
+          <div className="rounded-3xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 p-4 sm:p-5 shadow-xs transition-colors">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
               <div className="flex items-center gap-2">
                 <Sliders className="w-5 h-5 text-[#E05A36]" />
-                <h3 className="text-sm sm:text-base font-bold text-stone-800">
+                <h3 className="text-sm sm:text-base font-bold text-stone-800 dark:text-stone-100">
                   Control Manual de Actuadores
                 </h3>
               </div>
@@ -446,17 +446,17 @@ export const IncubatorDetailModal: React.FC<Props> = ({
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               {/* Tarjeta PTC */}
-              <div className="rounded-2xl bg-stone-50 border border-stone-200 p-3.5 flex flex-col justify-between">
+              <div className="rounded-2xl bg-stone-50 dark:bg-stone-800/80 border border-stone-200 dark:border-stone-700/80 p-3.5 flex flex-col justify-between">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-stone-700 flex items-center gap-1.5">
+                  <span className="text-xs font-semibold text-stone-700 dark:text-stone-300 flex items-center gap-1.5">
                     <Flame className="w-4 h-4 text-rose-500" />
                     PTC Calefactor
                   </span>
                   <span
                     className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
                       sensores?.manual?.ptc
-                        ? 'bg-amber-100 text-amber-800 border border-amber-300'
-                        : 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                        ? 'bg-amber-100 dark:bg-amber-950/70 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-700'
+                        : 'bg-emerald-100 dark:bg-emerald-950/70 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700'
                     }`}
                   >
                     {sensores?.manual?.ptc ? 'MANUAL' : 'AUTO'}
@@ -466,35 +466,35 @@ export const IncubatorDetailModal: React.FC<Props> = ({
                   <button
                     onClick={() => onActuador('ptc', 0)}
                     disabled={!enLinea}
-                    className="px-1.5 py-1 text-[11px] font-bold rounded-lg bg-stone-200 hover:bg-stone-300 disabled:opacity-40 text-stone-700 transition cursor-pointer disabled:cursor-not-allowed"
+                    className="px-1.5 py-1 text-[11px] font-bold rounded-lg bg-stone-200 dark:bg-stone-700 hover:bg-stone-300 dark:hover:bg-stone-600 disabled:opacity-40 text-stone-700 dark:text-stone-300 transition cursor-pointer disabled:cursor-not-allowed"
                   >
                     OFF
                   </button>
                   <button
                     onClick={() => onActuador('ptc', 25)}
                     disabled={!enLinea}
-                    className="px-1.5 py-1 text-[11px] font-bold rounded-lg bg-rose-100 hover:bg-rose-200 disabled:opacity-40 text-rose-800 transition cursor-pointer disabled:cursor-not-allowed"
+                    className="px-1.5 py-1 text-[11px] font-bold rounded-lg bg-rose-100 dark:bg-rose-950/70 hover:bg-rose-200 dark:hover:bg-rose-900/60 disabled:opacity-40 text-rose-800 dark:text-rose-300 transition cursor-pointer disabled:cursor-not-allowed"
                   >
                     25%
                   </button>
                   <button
                     onClick={() => onActuador('ptc', 50)}
                     disabled={!enLinea}
-                    className="px-1.5 py-1 text-[11px] font-bold rounded-lg bg-rose-100 hover:bg-rose-200 disabled:opacity-40 text-rose-800 transition cursor-pointer disabled:cursor-not-allowed"
+                    className="px-1.5 py-1 text-[11px] font-bold rounded-lg bg-rose-100 dark:bg-rose-950/70 hover:bg-rose-200 dark:hover:bg-rose-900/60 disabled:opacity-40 text-rose-800 dark:text-rose-300 transition cursor-pointer disabled:cursor-not-allowed"
                   >
                     50%
                   </button>
                   <button
                     onClick={() => onActuador('ptc', 100)}
                     disabled={!enLinea}
-                    className="px-1.5 py-1 text-[11px] font-bold rounded-lg bg-rose-200 hover:bg-rose-300 disabled:opacity-40 text-rose-900 transition cursor-pointer disabled:cursor-not-allowed"
+                    className="px-1.5 py-1 text-[11px] font-bold rounded-lg bg-rose-200 dark:bg-rose-900/80 hover:bg-rose-300 dark:hover:bg-rose-800/80 disabled:opacity-40 text-rose-900 dark:text-rose-200 transition cursor-pointer disabled:cursor-not-allowed"
                   >
                     100%
                   </button>
                   <button
                     onClick={() => onActuador('ptc', -1)}
                     disabled={!enLinea}
-                    className="px-1.5 py-1 text-[11px] font-bold rounded-lg bg-emerald-100 hover:bg-emerald-200 disabled:opacity-40 text-emerald-800 transition cursor-pointer disabled:cursor-not-allowed"
+                    className="px-1.5 py-1 text-[11px] font-bold rounded-lg bg-emerald-100 dark:bg-emerald-950/70 hover:bg-emerald-200 dark:hover:bg-emerald-900/60 disabled:opacity-40 text-emerald-800 dark:text-emerald-300 transition cursor-pointer disabled:cursor-not-allowed"
                   >
                     AUTO
                   </button>
@@ -502,17 +502,17 @@ export const IncubatorDetailModal: React.FC<Props> = ({
               </div>
 
               {/* Tarjeta Ventilador */}
-              <div className="rounded-2xl bg-stone-50 border border-stone-200 p-3.5 flex flex-col justify-between">
+              <div className="rounded-2xl bg-stone-50 dark:bg-stone-800/80 border border-stone-200 dark:border-stone-700/80 p-3.5 flex flex-col justify-between">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-stone-700 flex items-center gap-1.5">
+                  <span className="text-xs font-semibold text-stone-700 dark:text-stone-300 flex items-center gap-1.5">
                     <Fan className="w-4 h-4 text-sky-500" />
                     Ventilador
                   </span>
                   <span
                     className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
                       sensores?.manual?.ventilador
-                        ? 'bg-amber-100 text-amber-800 border border-amber-300'
-                        : 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                        ? 'bg-amber-100 dark:bg-amber-950/70 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-700'
+                        : 'bg-emerald-100 dark:bg-emerald-950/70 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700'
                     }`}
                   >
                     {sensores?.manual?.ventilador ? 'MANUAL' : 'AUTO'}
@@ -522,35 +522,35 @@ export const IncubatorDetailModal: React.FC<Props> = ({
                   <button
                     onClick={() => onActuador('fan', 0)}
                     disabled={!enLinea}
-                    className="px-1.5 py-1 text-[11px] font-bold rounded-lg bg-stone-200 hover:bg-stone-300 disabled:opacity-40 text-stone-700 transition cursor-pointer disabled:cursor-not-allowed"
+                    className="px-1.5 py-1 text-[11px] font-bold rounded-lg bg-stone-200 dark:bg-stone-700 hover:bg-stone-300 dark:hover:bg-stone-600 disabled:opacity-40 text-stone-700 dark:text-stone-300 transition cursor-pointer disabled:cursor-not-allowed"
                   >
                     OFF
                   </button>
                   <button
                     onClick={() => onActuador('fan', 50)}
                     disabled={!enLinea}
-                    className="px-1.5 py-1 text-[11px] font-bold rounded-lg bg-sky-100 hover:bg-sky-200 disabled:opacity-40 text-sky-800 transition cursor-pointer disabled:cursor-not-allowed"
+                    className="px-1.5 py-1 text-[11px] font-bold rounded-lg bg-sky-100 dark:bg-sky-950/70 hover:bg-sky-200 dark:hover:bg-sky-900/60 disabled:opacity-40 text-sky-800 dark:text-sky-300 transition cursor-pointer disabled:cursor-not-allowed"
                   >
                     50%
                   </button>
                   <button
                     onClick={() => onActuador('fan', 75)}
                     disabled={!enLinea}
-                    className="px-1.5 py-1 text-[11px] font-bold rounded-lg bg-sky-100 hover:bg-sky-200 disabled:opacity-40 text-sky-800 transition cursor-pointer disabled:cursor-not-allowed"
+                    className="px-1.5 py-1 text-[11px] font-bold rounded-lg bg-sky-100 dark:bg-sky-950/70 hover:bg-sky-200 dark:hover:bg-sky-900/60 disabled:opacity-40 text-sky-800 dark:text-sky-300 transition cursor-pointer disabled:cursor-not-allowed"
                   >
                     75%
                   </button>
                   <button
                     onClick={() => onActuador('fan', 100)}
                     disabled={!enLinea}
-                    className="px-1.5 py-1 text-[11px] font-bold rounded-lg bg-sky-200 hover:bg-sky-300 disabled:opacity-40 text-sky-900 transition cursor-pointer disabled:cursor-not-allowed"
+                    className="px-1.5 py-1 text-[11px] font-bold rounded-lg bg-sky-200 dark:bg-sky-900/80 hover:bg-sky-300 dark:hover:bg-sky-800/80 disabled:opacity-40 text-sky-900 dark:text-sky-200 transition cursor-pointer disabled:cursor-not-allowed"
                   >
                     100%
                   </button>
                   <button
                     onClick={() => onActuador('fan', -1)}
                     disabled={!enLinea}
-                    className="px-1.5 py-1 text-[11px] font-bold rounded-lg bg-emerald-100 hover:bg-emerald-200 disabled:opacity-40 text-emerald-800 transition cursor-pointer disabled:cursor-not-allowed"
+                    className="px-1.5 py-1 text-[11px] font-bold rounded-lg bg-emerald-100 dark:bg-emerald-950/70 hover:bg-emerald-200 dark:hover:bg-emerald-900/60 disabled:opacity-40 text-emerald-800 dark:text-emerald-300 transition cursor-pointer disabled:cursor-not-allowed"
                   >
                     AUTO
                   </button>
@@ -558,17 +558,17 @@ export const IncubatorDetailModal: React.FC<Props> = ({
               </div>
 
               {/* Tarjeta Humidificador */}
-              <div className="rounded-2xl bg-stone-50 border border-stone-200 p-3.5 flex flex-col justify-between">
+              <div className="rounded-2xl bg-stone-50 dark:bg-stone-800/80 border border-stone-200 dark:border-stone-700/80 p-3.5 flex flex-col justify-between">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-stone-700 flex items-center gap-1.5">
+                  <span className="text-xs font-semibold text-stone-700 dark:text-stone-300 flex items-center gap-1.5">
                     <Waves className="w-4 h-4 text-teal-500" />
                     Humidificador
                   </span>
                   <span
                     className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
                       sensores?.manual?.humidificador
-                        ? 'bg-amber-100 text-amber-800 border border-amber-300'
-                        : 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                        ? 'bg-amber-100 dark:bg-amber-950/70 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-700'
+                        : 'bg-emerald-100 dark:bg-emerald-950/70 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700'
                     }`}
                   >
                     {sensores?.manual?.humidificador ? 'MANUAL' : 'AUTO'}
@@ -578,21 +578,21 @@ export const IncubatorDetailModal: React.FC<Props> = ({
                   <button
                     onClick={() => onActuador('hum', 1)}
                     disabled={!enLinea}
-                    className="px-2 py-1 text-[11px] font-bold rounded-lg bg-teal-100 hover:bg-teal-200 disabled:opacity-40 text-teal-800 transition cursor-pointer disabled:cursor-not-allowed"
+                    className="px-2 py-1 text-[11px] font-bold rounded-lg bg-teal-100 dark:bg-teal-950/70 hover:bg-teal-200 dark:hover:bg-teal-900/60 disabled:opacity-40 text-teal-800 dark:text-teal-300 transition cursor-pointer disabled:cursor-not-allowed"
                   >
                     ON (1)
                   </button>
                   <button
                     onClick={() => onActuador('hum', 0)}
                     disabled={!enLinea}
-                    className="px-2 py-1 text-[11px] font-bold rounded-lg bg-stone-200 hover:bg-stone-300 disabled:opacity-40 text-stone-700 transition cursor-pointer disabled:cursor-not-allowed"
+                    className="px-2 py-1 text-[11px] font-bold rounded-lg bg-stone-200 dark:bg-stone-700 hover:bg-stone-300 dark:hover:bg-stone-600 disabled:opacity-40 text-stone-700 dark:text-stone-300 transition cursor-pointer disabled:cursor-not-allowed"
                   >
                     OFF (0)
                   </button>
                   <button
                     onClick={() => onActuador('hum', -1)}
                     disabled={!enLinea}
-                    className="px-2 py-1 text-[11px] font-bold rounded-lg bg-emerald-100 hover:bg-emerald-200 disabled:opacity-40 text-emerald-800 transition cursor-pointer disabled:cursor-not-allowed"
+                    className="px-2 py-1 text-[11px] font-bold rounded-lg bg-emerald-100 dark:bg-emerald-950/70 hover:bg-emerald-200 dark:hover:bg-emerald-900/60 disabled:opacity-40 text-emerald-800 dark:text-emerald-300 transition cursor-pointer disabled:cursor-not-allowed"
                   >
                     AUTO
                   </button>
@@ -600,7 +600,7 @@ export const IncubatorDetailModal: React.FC<Props> = ({
               </div>
             </div>
 
-            <p className="mt-3 text-[11px] text-stone-500 italic">
+            <p className="mt-3 text-[11px] text-stone-500 dark:text-stone-400 italic">
               El modo manual vuelve a AUTO al desconectar el Bluetooth. Los cortes de seguridad térmica siempre tienen prioridad.
             </p>
           </div>
@@ -609,51 +609,51 @@ export const IncubatorDetailModal: React.FC<Props> = ({
           <div className="space-y-3">
             <div className="flex items-center gap-2 pt-1">
               <Sliders className="w-4 h-4 text-[#E05A36]" />
-              <h3 className="text-xs font-bold uppercase tracking-wider text-stone-700">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-stone-700 dark:text-stone-300">
                 Información Técnica y Diagnóstico de Sensores
               </h3>
             </div>
 
             {/* PARÁMETROS PID Y SENSORES REDUNDANTES */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-              <div className="bg-[#FAF6F0] rounded-2xl p-3 border border-stone-200">
-                <span className="text-xs text-stone-500 font-medium">Temp Disipador PTC (DS18B20)</span>
+              <div className="bg-[#FAF6F0] dark:bg-stone-800/90 rounded-2xl p-3 border border-stone-200 dark:border-stone-700">
+                <span className="text-xs text-stone-500 dark:text-stone-400 font-medium">Temp Disipador PTC (DS18B20)</span>
                 <div className="flex items-baseline gap-2 mt-1">
-                  <span className="text-xl font-bold font-mono text-stone-900">
+                  <span className="text-xl font-bold font-mono text-stone-900 dark:text-stone-100">
                     {sensores?.temp_disipador ?? '--'} °C
                   </span>
-                  <span className="text-[11px] text-stone-500">Corte: 65°C</span>
+                  <span className="text-[11px] text-stone-500 dark:text-stone-400">Corte: 65°C</span>
                 </div>
               </div>
 
-              <div className="bg-[#FAF6F0] rounded-2xl p-3 border border-stone-200">
-                <span className="text-xs text-stone-500 font-medium">Temp Huevos (BMP280)</span>
+              <div className="bg-[#FAF6F0] dark:bg-stone-800/90 rounded-2xl p-3 border border-stone-200 dark:border-stone-700">
+                <span className="text-xs text-stone-500 dark:text-stone-400 font-medium">Temp Huevos (BMP280)</span>
                 <div className="flex items-baseline gap-2 mt-1">
-                  <span className="text-xl font-bold font-mono text-stone-900">
+                  <span className="text-xl font-bold font-mono text-stone-900 dark:text-stone-100">
                     {sensores?.temp_aire2 ?? '--'} °C
                   </span>
-                  <span className="text-[11px] text-stone-500">Sensor redundante</span>
+                  <span className="text-[11px] text-stone-500 dark:text-stone-400">Sensor redundante</span>
                 </div>
               </div>
 
-              <div className="bg-[#FAF6F0] rounded-2xl p-3 border border-stone-200">
-                <span className="text-xs text-stone-500 font-medium">Respaldo DHT11 (T / H)</span>
+              <div className="bg-[#FAF6F0] dark:bg-stone-800/90 rounded-2xl p-3 border border-stone-200 dark:border-stone-700">
+                <span className="text-xs text-stone-500 dark:text-stone-400 font-medium">Respaldo DHT11 (T / H)</span>
                 <div className="flex items-baseline gap-2 mt-1">
-                  <span className="text-xl font-bold font-mono text-stone-900">
+                  <span className="text-xl font-bold font-mono text-stone-900 dark:text-stone-100">
                     {sensores?.hum_dht !== undefined ? `${sensores.hum_dht}%` : '--'}
                   </span>
-                  <span className="text-[11px] text-stone-500">
+                  <span className="text-[11px] text-stone-500 dark:text-stone-400">
                     {sensores?.temp_dht !== undefined ? `${sensores.temp_dht} °C` : 'Sensor respaldo'}
                   </span>
                 </div>
               </div>
 
-              <div className="bg-[#FAF6F0] rounded-2xl p-3 border border-stone-200">
-                <span className="text-xs text-stone-500 font-medium">Lazo PID (Kp / Ki / Kd)</span>
-                <div className="flex items-baseline gap-1 mt-1 font-mono text-sm font-bold text-stone-800">
+              <div className="bg-[#FAF6F0] dark:bg-stone-800/90 rounded-2xl p-3 border border-stone-200 dark:border-stone-700">
+                <span className="text-xs text-stone-500 dark:text-stone-400 font-medium">Lazo PID (Kp / Ki / Kd)</span>
+                <div className="flex items-baseline gap-1 mt-1 font-mono text-sm font-bold text-stone-800 dark:text-stone-200">
                   <span>{sensores?.pid.kp ?? 35}</span> / <span>{sensores?.pid.ki ?? 0.8}</span> /{' '}
                   <span>{sensores?.pid.kd ?? 15}</span>
-                  <span className="text-xs font-sans text-stone-500 ml-1">({sensores?.pid.salida}% PWM)</span>
+                  <span className="text-xs font-sans text-stone-500 dark:text-stone-400 ml-1">({sensores?.pid.salida}% PWM)</span>
                 </div>
               </div>
             </div>
@@ -661,19 +661,19 @@ export const IncubatorDetailModal: React.FC<Props> = ({
             {/* PANEL INFORMATIVO DE ESTADO DE SENSORES */}
             <div
               id="sensores-ok-panel"
-              className="rounded-3xl border border-stone-200/90 bg-white p-4 sm:p-5 shadow-xs transition-all"
+              className="rounded-3xl border border-stone-200/90 dark:border-stone-800 bg-white dark:bg-stone-900 p-4 sm:p-5 shadow-xs transition-colors"
             >
               {/* Encabezado del panel con resumen y estado global */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 mb-3.5 pb-2.5 border-b border-stone-100">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 mb-3.5 pb-2.5 border-b border-stone-100 dark:border-stone-800">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-xl bg-orange-50 border border-orange-200/70 flex items-center justify-center shrink-0">
+                  <div className="w-8 h-8 rounded-xl bg-orange-50 dark:bg-orange-950/60 border border-orange-200/70 dark:border-orange-800 flex items-center justify-center shrink-0">
                     <Cpu className="w-4 h-4 text-[#E05A36]" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-bold text-stone-900 leading-tight">
+                    <h3 className="text-sm font-bold text-stone-900 dark:text-stone-100 leading-tight">
                       Estado de Conexión de Sensores
                     </h3>
-                    <p className="text-[11px] text-stone-500">
+                    <p className="text-[11px] text-stone-500 dark:text-stone-400">
                       Supervisión continua de bus I2C, 1-Wire y GPIO del ESP32
                     </p>
                   </div>
@@ -896,53 +896,53 @@ export const IncubatorDetailModal: React.FC<Props> = ({
           </div>
 
           {/* GRÁFICAS DE TELEMETRÍA (ÚLTIMAS 24H) */}
-          <div className="rounded-3xl border border-stone-200 bg-white p-4 sm:p-5 shadow-xs">
+          <div className="rounded-3xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 p-4 sm:p-5 shadow-xs transition-colors">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
               <div className="flex items-center gap-2">
                 <Activity className="w-5 h-5 text-[#E05A36]" />
-                <h3 className="text-sm sm:text-base font-bold text-stone-800">
+                <h3 className="text-sm sm:text-base font-bold text-stone-800 dark:text-stone-100">
                   Telemetría Registrada (Últimas 24 Horas)
                 </h3>
               </div>
 
               {/* Selector de métrica */}
-              <div className="flex items-center gap-1 bg-stone-100 p-1 rounded-2xl text-xs font-semibold overflow-x-auto">
+              <div className="flex items-center gap-1 bg-stone-100 dark:bg-stone-800 p-1 rounded-2xl text-xs font-semibold overflow-x-auto">
                 <button
                   onClick={() => setTabGrafica('TEMP')}
-                  className={`px-3 py-1 rounded-xl transition ${
+                  className={`px-3 py-1 rounded-xl transition cursor-pointer ${
                     tabGrafica === 'TEMP'
-                      ? 'bg-white text-[#E05A36] shadow-xs font-bold'
-                      : 'text-stone-600 hover:text-stone-900'
+                      ? 'bg-white dark:bg-stone-700 text-[#E05A36] dark:text-[#FF7A50] shadow-xs font-bold'
+                      : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200'
                   }`}
                 >
                   Temperatura
                 </button>
                 <button
                   onClick={() => setTabGrafica('HUM')}
-                  className={`px-3 py-1 rounded-xl transition ${
+                  className={`px-3 py-1 rounded-xl transition cursor-pointer ${
                     tabGrafica === 'HUM'
-                      ? 'bg-white text-sky-600 shadow-xs font-bold'
-                      : 'text-stone-600 hover:text-stone-900'
+                      ? 'bg-white dark:bg-stone-700 text-sky-600 dark:text-sky-400 shadow-xs font-bold'
+                      : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200'
                   }`}
                 >
                   Humedad
                 </button>
                 <button
                   onClick={() => setTabGrafica('DISIPADOR')}
-                  className={`px-3 py-1 rounded-xl transition ${
+                  className={`px-3 py-1 rounded-xl transition cursor-pointer ${
                     tabGrafica === 'DISIPADOR'
-                      ? 'bg-white text-amber-600 shadow-xs font-bold'
-                      : 'text-stone-600 hover:text-stone-900'
+                      ? 'bg-white dark:bg-stone-700 text-amber-600 dark:text-amber-400 shadow-xs font-bold'
+                      : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200'
                   }`}
                 >
                   Disipador PTC
                 </button>
                 <button
                   onClick={() => setTabGrafica('PID')}
-                  className={`px-3 py-1 rounded-xl transition ${
+                  className={`px-3 py-1 rounded-xl transition cursor-pointer ${
                     tabGrafica === 'PID'
-                      ? 'bg-white text-purple-600 shadow-xs font-bold'
-                      : 'text-stone-600 hover:text-stone-900'
+                      ? 'bg-white dark:bg-stone-700 text-purple-600 dark:text-purple-400 shadow-xs font-bold'
+                      : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200'
                   }`}
                 >
                   Salida PID %
@@ -956,14 +956,15 @@ export const IncubatorDetailModal: React.FC<Props> = ({
                 <ResponsiveContainer width="100%" height="100%">
                   {tabGrafica === 'TEMP' ? (
                     <LineChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#F0EBE5" />
+                      <CartesianGrid strokeDasharray="3 3" stroke="#88888833" />
                       <XAxis dataKey="hora" stroke="#A8A29E" fontSize={11} tickLine={false} />
                       <YAxis domain={['dataMin - 0.5', 'dataMax + 0.5']} stroke="#A8A29E" fontSize={11} />
                       <Tooltip
                         contentStyle={{
-                          backgroundColor: '#FFF',
+                          backgroundColor: '#1C1917',
+                          color: '#F5F5F4',
                           borderRadius: '16px',
-                          border: '1px solid #E7E5E4',
+                          border: '1px solid #44403C',
                           fontSize: '12px',
                         }}
                       />
@@ -997,14 +998,15 @@ export const IncubatorDetailModal: React.FC<Props> = ({
                     </LineChart>
                   ) : tabGrafica === 'HUM' ? (
                     <LineChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#F0EBE5" />
+                      <CartesianGrid strokeDasharray="3 3" stroke="#88888833" />
                       <XAxis dataKey="hora" stroke="#A8A29E" fontSize={11} tickLine={false} />
                       <YAxis domain={[30, 85]} stroke="#A8A29E" fontSize={11} />
                       <Tooltip
                         contentStyle={{
-                          backgroundColor: '#FFF',
+                          backgroundColor: '#1C1917',
+                          color: '#F5F5F4',
                           borderRadius: '16px',
-                          border: '1px solid #E7E5E4',
+                          border: '1px solid #44403C',
                           fontSize: '12px',
                         }}
                       />
@@ -1038,14 +1040,15 @@ export const IncubatorDetailModal: React.FC<Props> = ({
                     </LineChart>
                   ) : tabGrafica === 'DISIPADOR' ? (
                     <LineChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#F0EBE5" />
+                      <CartesianGrid strokeDasharray="3 3" stroke="#88888833" />
                       <XAxis dataKey="hora" stroke="#A8A29E" fontSize={11} tickLine={false} />
                       <YAxis domain={[30, 70]} stroke="#A8A29E" fontSize={11} />
                       <Tooltip
                         contentStyle={{
-                          backgroundColor: '#FFF',
+                          backgroundColor: '#1C1917',
+                          color: '#F5F5F4',
                           borderRadius: '16px',
-                          border: '1px solid #E7E5E4',
+                          border: '1px solid #44403C',
                           fontSize: '12px',
                         }}
                       />
@@ -1061,14 +1064,15 @@ export const IncubatorDetailModal: React.FC<Props> = ({
                     </LineChart>
                   ) : (
                     <LineChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#F0EBE5" />
+                      <CartesianGrid strokeDasharray="3 3" stroke="#88888833" />
                       <XAxis dataKey="hora" stroke="#A8A29E" fontSize={11} tickLine={false} />
                       <YAxis domain={[0, 100]} stroke="#A8A29E" fontSize={11} />
                       <Tooltip
                         contentStyle={{
-                          backgroundColor: '#FFF',
+                          backgroundColor: '#1C1917',
+                          color: '#F5F5F4',
                           borderRadius: '16px',
-                          border: '1px solid #E7E5E4',
+                          border: '1px solid #44403C',
                           fontSize: '12px',
                         }}
                       />
@@ -1085,7 +1089,7 @@ export const IncubatorDetailModal: React.FC<Props> = ({
                   )}
                 </ResponsiveContainer>
               ) : (
-                <div className="h-full flex items-center justify-center text-stone-400 text-xs">
+                <div className="h-full flex items-center justify-center text-stone-400 dark:text-stone-500 text-xs">
                   Recopilando telemetría... Las curvas se graficarán conforme lleguen lecturas del ESP32.
                 </div>
               )}
@@ -1093,21 +1097,21 @@ export const IncubatorDetailModal: React.FC<Props> = ({
           </div>
 
           {/* INSPECCIÓN RAW JSON DEL ESP32 (PARA DEPURACIÓN DE HARDWARE) */}
-          <div className="border border-stone-200 rounded-2xl p-4 bg-stone-50">
+          <div className="border border-stone-200 dark:border-stone-800 rounded-2xl p-4 bg-stone-50 dark:bg-stone-800/80 transition-colors">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-stone-700 flex items-center gap-1.5">
-                <Code className="w-4 h-4 text-stone-500" />
+              <span className="text-xs font-bold text-stone-700 dark:text-stone-300 flex items-center gap-1.5">
+                <Code className="w-4 h-4 text-stone-500 dark:text-stone-400" />
                 Diagnóstico de Trama JSON (Notificación BLE b7a10002...)
               </span>
               <button
                 onClick={() => setMostrarJSON(!mostrarJSON)}
-                className="text-xs font-semibold text-[#E05A36] hover:underline"
+                className="text-xs font-semibold text-[#E05A36] dark:text-[#FF7A50] hover:underline cursor-pointer"
               >
                 {mostrarJSON ? 'Ocultar JSON' : 'Ver JSON crudo'}
               </button>
             </div>
             {mostrarJSON && (
-              <pre className="mt-3 p-3 bg-stone-900 text-emerald-400 rounded-xl text-[11px] font-mono overflow-x-auto max-h-48">
+              <pre className="mt-3 p-3 bg-stone-900 dark:bg-stone-950 text-emerald-400 rounded-xl text-[11px] font-mono overflow-x-auto max-h-48 border border-stone-800">
                 {JSON.stringify(sensores, null, 2)}
               </pre>
             )}
@@ -1115,13 +1119,13 @@ export const IncubatorDetailModal: React.FC<Props> = ({
         </div>
 
         {/* Pie del modal */}
-        <div className="px-6 py-3.5 border-t border-stone-100 bg-[#FAF6F0] flex items-center justify-between">
-          <div className="text-xs text-stone-500">
-            Perfil: <strong>{perfil?.nombre}</strong> ({incubadora.cantidadHuevos} huevos)
+        <div className="px-6 py-3.5 border-t border-stone-100 dark:border-stone-800 bg-[#FAF6F0] dark:bg-stone-800 flex items-center justify-between transition-colors">
+          <div className="text-xs text-stone-500 dark:text-stone-400">
+            Perfil: <strong className="text-stone-800 dark:text-stone-200">{perfil?.nombre}</strong> ({incubadora.cantidadHuevos} huevos)
           </div>
           <button
             onClick={onClose}
-            className="px-5 py-2 rounded-2xl bg-stone-800 hover:bg-stone-900 text-white text-xs font-bold transition shadow-xs"
+            className="px-5 py-2 rounded-2xl bg-stone-800 dark:bg-stone-700 hover:bg-stone-900 dark:hover:bg-stone-600 text-white text-xs font-bold transition shadow-xs cursor-pointer"
           >
             Cerrar
           </button>

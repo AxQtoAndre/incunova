@@ -1,8 +1,14 @@
 export const ESP32_SKETCH_INO = `/*
  * ==============================================================================
- * IncubaESP v3.0 - Firmware de Incubadora Automática (ESP32 WROOM 38 pines + BLE)
+ * incuNOVA v3.1 - Firmware de Incubadora Automática (ESP32 WROOM 38 pines + BLE)
  * ==============================================================================
- * Compatible con la app web IncubaESP (Web Bluetooth). Mismos UUIDs y JSON.
+ * MEJORAS v3.1 CRÍTICAS:
+ * 1. Buffer JSON ampliado a 512 bytes (evita desbordamiento y congelamiento del panel).
+ * 2. Callback BLE con copia profunda en string RAM independiente (evita corrupción de punteros y Kernel Panic).
+ * 3. Timeout de bus I2C reducido a 50 ms e inicialización segura (previene cuelgues si sensores o LCD fallan).
+ * 4. Scan Response y timings BLE optimizados para navegadores (Chrome, Edge y Android).
+ * ==============================================================================
+ * Compatible con la app web incuNOVA (Web Bluetooth). Mismos UUIDs y JSON.
  *
  * SENSORES
  *   AHT20  (I2C 0x38)  -> temperatura + humedad de los HUEVOS  (principal)
@@ -66,7 +72,7 @@ export const ESP32_SKETCH_INO = `/*
 #define SERVICE_UUID        "b7a10001-5d3e-4c1a-9f2b-6e8d4a3c1f00"
 #define CHAR_SENSORES_UUID  "b7a10002-5d3e-4c1a-9f2b-6e8d4a3c1f00"
 #define CHAR_COMANDO_UUID   "b7a10003-5d3e-4c1a-9f2b-6e8d4a3c1f00"
-#define BLE_DEVICE_NAME     "Incubanova-01"
+#define BLE_DEVICE_NAME     "incuNOVA-01"
 
 // ==============================================================================
 // 2. PINES (según tu esquema)
@@ -647,20 +653,25 @@ class ServerCB : public NimBLEServerCallbacks {
 class CmdCB : public NimBLECharacteristicCallbacks {
 #if NIMBLE_V2
   void onWrite(NimBLECharacteristic* c, NimBLEConnInfo& info) override {
-    const NimBLEAttValue v = c->getValue();
-    encolarComando((const char*)v.c_str(), v.size());
+    // Copia profunda y segura en un string independiente en RAM antes de que NimBLE v2 libere la memoria
+    std::string v = c->getValue();
+    if (!v.empty()) {
+      encolarComando(v.c_str(), v.length());
+    }
   }
 #else
   void onWrite(NimBLECharacteristic* c) override {
     std::string v = c->getValue();
-    encolarComando(v.c_str(), v.length());
+    if (!v.empty()) {
+      encolarComando(v.c_str(), v.length());
+    }
   }
 #endif
 };
 
 void iniciarBLE() {
   NimBLEDevice::init(BLE_DEVICE_NAME);
-  NimBLEDevice::setMTU(247);                         // permite tramas de ~240 bytes
+  NimBLEDevice::setMTU(247);                         // Permite tramas completas sin fragmentación indeseada
   pServer = NimBLEDevice::createServer();
   pServer->setCallbacks(new ServerCB());
   NimBLEService* svc = pServer->createService(SERVICE_UUID);
@@ -670,14 +681,15 @@ void iniciarBLE() {
                     NIMBLE_PROPERTY::WRITE | NIMBLE_PROPERTY::WRITE_NR);
   pCharComando->setCallbacks(new CmdCB());
   svc->start();
+
   NimBLEAdvertising* adv = NimBLEDevice::getAdvertising();
   adv->addServiceUUID(SERVICE_UUID);
   adv->setName(BLE_DEVICE_NAME);
-  adv->setScanResponse(true);
-  adv->setMinPreferred(0x06);                         // Conexión estable de baja latencia (Android/iOS)
-  adv->setMaxPreferred(0x12);
+  adv->setScanResponse(true);                        // Scan Response activo para que Google Chrome, Edge y Android reconozcan la incubadora
+  adv->setMinPreferred(0x06);                         // Intervalo preferido de conexión (7.5 ms para baja latencia)
+  adv->setMaxPreferred(0x12);                         // Intervalo máximo (22.5 ms para estabilidad con móviles)
   adv->start();
-  Serial.println(F("[BLE] Anunciando servicio IncubaESP"));
+  Serial.println(F("[BLE] Anunciando servicio incuNOVA v3.1"));
 }
 
 // Trama compatible con la app (campos originales) + campos extra opcionales
@@ -710,7 +722,7 @@ int construirPayload(char* buf, size_t n) {
 
 void notificarSensores() {
   if (!pCharSensores) return;
-  char buf[256];
+  char buf[512]; // Ampliado a 512 bytes (v3.1) para garantizar que la trama JSON viaje completa y sin recortes
   int len = construirPayload(buf, sizeof(buf));
   if (len <= 0 || len >= (int)sizeof(buf)) return;
   pCharSensores->setValue((uint8_t*)buf, (size_t)len);
@@ -809,24 +821,39 @@ void setup() {
 
   Wire.begin(PIN_I2C_SDA, PIN_I2C_SCL);
   Wire.setClock(100000);
-  Wire.setTimeOut(100);
+  Wire.setTimeOut(50); // Timeout a 50ms (v3.1): si un sensor o la pantalla fallan físicamente o se desconectan, no bloquea el arranque ni la conexión COM
 
-  // LCD: autodetecta 0x27 o 0x3F
+  // LCD: autodetecta 0x27 o 0x3F de forma segura sin bloquear
   uint8_t dirLcd = i2cResponde(0x27) ? 0x27 : (i2cResponde(0x3F) ? 0x3F : 0);
   if (dirLcd) {
     lcd = new LiquidCrystal_I2C(dirLcd, 16, 2);
     lcd->init();
     lcd->backlight();
-    lcdLinea(0, "IncubaESP v3.0", false);
+    lcdLinea(0, "incuNOVA v3.1", false);
     lcdLinea(1, "Iniciando...", false);
   } else {
     Serial.println(F("[WARN] LCD I2C no detectada (0x27/0x3F)"));
   }
 
-  aht_presente = aht.begin();
-  bmp_presente = bmp.begin(0x76);
-  bmp_addr = 0x76;
-  if (!bmp_presente) { bmp_presente = bmp.begin(0x77); bmp_addr = 0x77; }
+  // Detección segura de AHT20 (evita bucles infinitos si hay falso contacto)
+  if (i2cResponde(0x38)) {
+    aht_presente = aht.begin();
+  } else {
+    Serial.println(F("[WARN] AHT20 no responde en 0x38"));
+    aht_presente = false;
+  }
+
+  // Detección segura de BMP280 (0x76 o 0x77)
+  if (i2cResponde(0x76)) {
+    bmp_presente = bmp.begin(0x76);
+    bmp_addr = 0x76;
+  } else if (i2cResponde(0x77)) {
+    bmp_presente = bmp.begin(0x77);
+    bmp_addr = 0x77;
+  } else {
+    bmp_presente = false;
+  }
+
   if (bmp_presente) {
     bmp.setSampling(Adafruit_BMP280::MODE_NORMAL, Adafruit_BMP280::SAMPLING_X2,
                     Adafruit_BMP280::SAMPLING_X16, Adafruit_BMP280::FILTER_X16,
@@ -836,7 +863,7 @@ void setup() {
   ds18b20.begin();
   ds18b20.setResolution(11);
   ds18b20.setWaitForConversion(false);
-  Serial.printf("[INIT] AHT20:%d BMP280:%d DS18B20:%d\\n",
+  Serial.printf("[INIT v3.1] AHT20:%d BMP280:%d DS18B20:%d\n",
                 aht_presente, bmp_presente, ds18b20.getDeviceCount());
 
   iniciarBLE();

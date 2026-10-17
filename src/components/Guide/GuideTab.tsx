@@ -40,9 +40,9 @@ export const GuideTab: React.FC = () => {
           </p>
           <div className="bg-stone-900 text-emerald-400 p-3 rounded-xl font-mono text-xs">
             [BLE] Stack NimBLE inicializado.<br />
-            [BLE] Publicidad activa (Advertising: IncubaESP-01)<br />
+            [BLE] Publicidad activa (Advertising: incuNOVA-01)<br />
             [GATT] Servicio raíz: b7a10001-5d3e-4c1a-9f2b-6e8d4a3c1f00<br />
-            [ESTADO] Listo para emparejar desde la app web IncubaESP.
+            [ESTADO] Listo para emparejar desde la app web incuNOVA.
           </div>
           <p>
             3. El ESP32 ya se encuentra regulando la temperatura de forma autónoma con su lazo PID integrado.
@@ -58,10 +58,10 @@ export const GuideTab: React.FC = () => {
       detalle: (
         <div className="space-y-2 text-xs sm:text-sm text-stone-700 leading-relaxed">
           <p>
-            1. En la aplicación web IncubaESP, ve a la pestaña <strong>Dispositivos</strong> o pulsa el botón <strong>+ Nueva incubadora</strong>.
+            1. En la aplicación web incuNOVA, ve a la pestaña <strong>Dispositivos</strong> o pulsa el botón <strong>+ Nueva incubadora</strong>.
           </p>
           <p>
-            2. Haz clic en el botón azul <strong>Emparejar incubadora</strong>. El navegador abrirá el diálogo nativo de selección Bluetooth filtrando automáticamente los dispositivos con el prefijo <code>IncubaESP</code> y el UUID de servicio.
+            2. Haz clic en el botón azul <strong>Emparejar incubadora</strong>. El navegador abrirá el diálogo nativo de selección Bluetooth filtrando automáticamente los dispositivos con el prefijo <code>incuNOVA</code> y el UUID de servicio.
           </p>
           <p>
             3. Selecciona tu incubadora en la lista y presiona <strong>Vincular</strong>. La app se conectará al servidor GATT y se suscribirá automáticamente a las notificaciones en tiempo real.
