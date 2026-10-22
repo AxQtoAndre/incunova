@@ -419,7 +419,7 @@ export const IncubatorDetailModal: React.FC<Props> = ({
                     {sensores?.salidas.motor ? 'GIRANDO...' : 'REPOSO'}
                   </div>
                   <div className="text-[11px] text-stone-500 dark:text-stone-400 font-mono mt-0.5">
-                    DRV8825 Pasos
+                    DRV8825 (Inactivo / Opcional)
                   </div>
                 </div>
               </div>
@@ -712,7 +712,7 @@ export const IncubatorDetailModal: React.FC<Props> = ({
                 {[
                   {
                     id: 'aht',
-                    nombre: 'AHT10',
+                    nombre: 'AHT20',
                     rol: 'Principal',
                     ubicacion: 'Zona huevos',
                     bus: 'I2C 0x38',

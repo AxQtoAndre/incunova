@@ -58,7 +58,10 @@ export const ESP32_SKETCH_INO = `/*
 #define PIN_BTN_HUM     26   // Botón 2 (Humedad en LCD)
 #define PIN_BTN_DIAS    27   // Botón 3 (Días transcurridos en LCD)
 
-// DRV8825 Motor Paso a Paso
+// DRV8825 Motor Paso a Paso (CONFIGURACIÓN MODULAR)
+// 0 = Deshabilitado (pines 32, 33, 23 en reposo sin excitación, sin volteo, conexión BLE 100% estable sin driver)
+// 1 = Habilitado con driver físico conectado
+#define HABILITAR_MOTOR_DRV8825 0
 #define PIN_STEP        32
 #define PIN_DIR         33
 #define PIN_EN          23   // /ENABLE: LOW = activo, HIGH = reposo frío
@@ -275,6 +278,11 @@ static void fanPwmWrite(uint8_t duty) {
 }
 
 void iniciarVolteo() {
+#if !HABILITAR_MOTOR_DRV8825
+  motor_girando = false;
+  Serial.println(F("[MOTOR] Volteo desactivado por configuración (DRV8825 no usado). BLE y sensores 100% operativos."));
+  return;
+#else
   if (motor_girando) return;
 #if VOLTEO_ALTERNAR
   dir_actual = !dir_actual;
@@ -288,10 +296,15 @@ void iniciarVolteo() {
   motor_inicio_ms = millis();
   motor_girando = true;
   Serial.println(F("[MOTOR] Volteo mecánico iniciado"));
+#endif
 }
 
 // Servicio no bloqueante del motor paso a paso con watchdog de seguridad
 void servicioMotor() {
+#if !HABILITAR_MOTOR_DRV8825
+  motor_girando = false;
+  return;
+#else
   if (!motor_girando) return;
 
   uint32_t nowMs = millis();
@@ -316,6 +329,7 @@ void servicioMotor() {
     ultimo_volteo_ms = millis();
     Serial.println(F("[MOTOR] Volteo mecánico completado con éxito"));
   }
+#endif
 }
 
 // ==============================================================================
@@ -559,10 +573,14 @@ void controlVentilador() {
 }
 
 void volteoAutomatico(uint32_t now) {
+#if !HABILITAR_MOTOR_DRV8825
+  return; // Motor deshabilitado: no ejecuta volteo automático
+#else
   if (motor_girando || dia_incubacion >= dia_lockdown) return;
   if ((now - ultimo_volteo_ms) >= (uint32_t)intervalo_volteo_min * 60000UL) {
     iniciarVolteo();
   }
+#endif
 }
 
 // ==============================================================================
@@ -758,11 +776,15 @@ void iniciarBLE() {
 int construirPayload(char* buf, size_t n) {
   uint32_t up = (uint32_t)(esp_timer_get_time() / 1000000ULL);
   int seg_volteo = 0;
+#if HABILITAR_MOTOR_DRV8825
   if (dia_incubacion < dia_lockdown) {
     uint32_t tr = (millis() - ultimo_volteo_ms) / 1000UL;
     uint32_t total = (uint32_t)intervalo_volteo_min * 60UL;
     seg_volteo = (tr < total) ? (int)(total - tr) : 0;
   }
+#else
+  seg_volteo = 0; // Motor deshabilitado: volteo automático inactivo
+#endif
   float obj_h = (dia_incubacion >= dia_lockdown) ? hum_lockdown : setpoint_hum;
   int dia_tx = min(dia_incubacion, dias_totales);
   int mn = (man_ptc ? 1 : 0) | (man_fan ? 2 : 0) | (man_hum ? 4 : 0);
@@ -823,33 +845,46 @@ void lcdLinea(uint8_t fila, const char* txt, bool marca) {
 
 void dibujarPantalla() {
   if (!lcd) return;
-  char l1[32], l2[32];
+  char l1[24], l2[24];
   switch (pantalla) {
-    case 0: // BOTÓN 1: Temperatura
-      if (temp_valida) snprintf(l1, sizeof(l1), "Huevos:%5.1fC", temp_aire);
-      else             snprintf(l1, sizeof(l1), "Huevos: --.-C");
-      if (ds_ok) snprintf(l2, sizeof(l2), "Set:%.1f PTC:%.0fC", setpoint_temp, temp_disipador);
-      else       snprintf(l2, sizeof(l2), "Set:%.1f PTC:--C", setpoint_temp);
+    case 0: // PANTALLA PRINCIPAL: AHT20 + BMP280 (Temperatura y Humedad primarias)
+      if (temp_valida && hum_valida) {
+        snprintf(l1, sizeof(l1), "T:%4.1fC H:%4.1f%%", temp_aire, humedad);
+      } else if (temp_valida) {
+        snprintf(l1, sizeof(l1), "T:%4.1fC H:--.-%%", temp_aire);
+      } else {
+        snprintf(l1, sizeof(l1), "T:--.-C  H:--.-%%");
+      }
+      if (bmp_ok) {
+        snprintf(l2, sizeof(l2), "St:%.1f P:%4.0f", setpoint_temp, presion_hpa);
+      } else {
+        snprintf(l2, sizeof(l2), "St:%.1f PTC:%.0fC", setpoint_temp, ds_ok ? temp_disipador : 0.0f);
+      }
       break;
 
-    case 1: { // BOTÓN 2: Humedad
-      float obj = (dia_incubacion >= dia_lockdown) ? hum_lockdown : setpoint_hum;
-      if (hum_valida) snprintf(l1, sizeof(l1), "Humedad:%5.1f%%", humedad);
-      else            snprintf(l1, sizeof(l1), "Humedad: --.-%%");
-      snprintf(l2, sizeof(l2), "Obj:%.0f%% Hum:%s", obj, humidificador_activo ? "ON" : "OFF");
+    case 1: { // DETALLE SENSORES PRIMARIOS: AHT20 vs BMP280 (Diagnóstico I2C)
+      if (aht_ok && bmp_ok) {
+        snprintf(l1, sizeof(l1), "A:%4.1fC B:%4.1fC", aht_t, bmp_t);
+      } else if (aht_ok) {
+        snprintf(l1, sizeof(l1), "AHT20: %4.1fC OK", aht_t);
+      } else if (bmp_ok) {
+        snprintf(l1, sizeof(l1), "BMP280:%4.1fC OK", bmp_t);
+      } else {
+        snprintf(l1, sizeof(l1), "SENSORES I2C ERR");
+      }
+      snprintf(l2, sizeof(l2), "PTC:%.0fC Fan:%3d%%",
+               ds_ok ? temp_disipador : 0.0f,
+               ventilador_pct);
       break;
     }
 
-    default: { // BOTÓN 3: Días de incubación
-      uint32_t d = elapsed_s / 86400UL;
-      uint32_t h = (elapsed_s % 86400UL) / 3600UL;
-      int faltan = max(0, dias_totales - (int)d);
-      snprintf(l1, sizeof(l1), "Transc: %lud %02luh", (unsigned long)d, (unsigned long)h);
-      if (faltan > 0) {
-        snprintf(l2, sizeof(l2), "D%d/%d Faltan:%d", min(dia_incubacion, dias_totales), dias_totales, faltan);
-      } else {
-        snprintf(l2, sizeof(l2), "D%d/%d ECLOSION", dias_totales, dias_totales);
-      }
+    default: { // DÍAS DE INCUBACIÓN Y ESTADO DE CONEXIÓN BLE
+      int d = min(dia_incubacion, dias_totales);
+      int faltan = max(0, dias_totales - (int)(elapsed_s / 86400UL));
+      snprintf(l1, sizeof(l1), "Dia %02d/%02d Falt:%d", d, dias_totales, faltan);
+      snprintf(l2, sizeof(l2), "BLE:%-4s Est:%-3s",
+               ble_conectado ? "CON" : "ADV",
+               stt_actual);
       break;
     }
   }
@@ -886,9 +921,17 @@ void setup() {
   // Estados seguros de salidas ANTES de cualquier otra operación
   pinMode(PIN_PTC, OUTPUT);     digitalWrite(PIN_PTC, LOW);
   pinMode(PIN_HUMIDIF, OUTPUT); digitalWrite(PIN_HUMIDIF, !RELE_NIVEL_ACTIVO);
+
+#if HABILITAR_MOTOR_DRV8825
   pinMode(PIN_STEP, OUTPUT);    digitalWrite(PIN_STEP, LOW);
   pinMode(PIN_DIR, OUTPUT);     digitalWrite(PIN_DIR, LOW);
   pinMode(PIN_EN, OUTPUT);      digitalWrite(PIN_EN, HIGH); // Driver liberado
+#else
+  // Pines DRV8825 (32, 33, 23) no utilizados por el momento: configurados en alta impedancia (INPUT)
+  pinMode(PIN_STEP, INPUT);
+  pinMode(PIN_DIR, INPUT);
+  pinMode(PIN_EN, INPUT);
+#endif
 
   pinMode(PIN_BTN_TEMP, INPUT_PULLUP);
   pinMode(PIN_BTN_HUM, INPUT_PULLUP);
@@ -975,10 +1018,18 @@ void loop() {
   }
   dia_incubacion = (int)(elapsed_s / 86400UL) + 1;
 
-  // Interacción de botones físicos
+  // Interacción de botones físicos y auto-rotación de pantalla para monitoreo continuo
   int b = leerBotones(now);
+  static uint32_t t_bloqueo_boton = 0;
+  static uint32_t t_auto_rotacion = 0;
   if (b >= 0) {
     pantalla = b;
+    t_bloqueo_boton = now;
+    lcd_redibujar = true;
+  } else if ((now - t_bloqueo_boton) >= 15000 && (now - t_auto_rotacion) >= 5000) {
+    // Si no se tocan botones físicos, alternar pantallas suavemente cada 5 s para mostrar todos los sensores
+    t_auto_rotacion = now;
+    pantalla = (pantalla + 1) % 3;
     lcd_redibujar = true;
   }
 

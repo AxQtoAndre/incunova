@@ -59,9 +59,9 @@ export const SketchTab: React.FC = () => {
     { componente: 'Relé Humidificador (Control app)', pin: 'GPIO 17', tipo: 'Salida Digital a módulo relé' },
     { componente: 'PTC Calefactor (4N35 + IRFZ44N) (Control app)', pin: 'GPIO 18', tipo: 'Salida PID (Optoacoplador + MOSFET IRFZ44N)' },
     { componente: 'Ventilador 12V (2N3904) (Control app)', pin: 'GPIO 19', tipo: 'PWM LEDC con transistor 2N3904' },
-    { componente: 'DRV8825 Motor STEP', pin: 'GPIO 32', tipo: 'Pulsos de avance paso a paso' },
-    { componente: 'DRV8825 Motor DIR', pin: 'GPIO 33', tipo: 'Dirección de rotación' },
-    { componente: 'DRV8825 Motor ENABLE', pin: 'GPIO 23', tipo: 'Habilitación /ENABLE (LOW = activo)' },
+    { componente: 'DRV8825 Motor STEP (Opcional)', pin: 'GPIO 32', tipo: 'Paso a paso (reposo seguro cuando está inactivo)' },
+    { componente: 'DRV8825 Motor DIR (Opcional)', pin: 'GPIO 33', tipo: 'Dirección (reposo seguro cuando está inactivo)' },
+    { componente: 'DRV8825 Motor ENABLE (Opcional)', pin: 'GPIO 23', tipo: 'Habilitación (reposo seguro cuando está inactivo)' },
   ];
 
   const librerias = [

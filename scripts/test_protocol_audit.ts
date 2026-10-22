@@ -340,6 +340,48 @@ async function runAllTests() {
   assert(pSondaDesconectada === 25.0, 'PTC se autolimita al 25 % conservador si el sensor DS18B20 se desconecta');
 
   // --------------------------------------------------------------------------
+  // BLOQUE 13: Desacoplamiento del driver DRV8825 y estabilidad BLE
+  // --------------------------------------------------------------------------
+  console.log('\n--- 13. Desacoplamiento DRV8825 y estabilidad de conexión BLE ---');
+  // Simular payload con DRV8825 inactivo/desconectado (out.m = 0)
+  const payloadSinMotor = JSON.stringify({
+    up: 1500,
+    ta: 37.8, // AHT20 sensor principal
+    ta2: 37.75, // BMP280 sensor secundario
+    h: 52.3, // AHT20 humedad principal
+    pr: 1013.8, // BMP280 presión
+    out: { p: 1, f: 60, h: 0, m: 0 }, // Motor en 0
+    stt: 'REG',
+  });
+
+  const parsedSinMotor = deserializarBlePayload(payloadSinMotor);
+  assert(parsedSinMotor.salidas.motor === false, 'Salida de motor en reposo/inactivo (out.m = 0)');
+  assert(parsedSinMotor.temp_aire === 37.8, 'Sensor principal AHT20 recibido correctamente en la app');
+  assert(parsedSinMotor.temp_aire2 === 37.75, 'Sensor secundario BMP280 recibido correctamente en la app');
+  assert(parsedSinMotor.humedad === 52.3, 'Humedad principal AHT20 recibida correctamente en la app');
+  assert(parsedSinMotor.presion === 1013.8, 'Presión barométrica BMP280 recibida correctamente en la app');
+
+  // Enviar comando "girar" a incubadora sin driver DRV8825
+  let comandoGiroRecibido = false;
+  (bleManager as any).conexiones.set('incuba-test-nomotor', {
+    charCommand: {
+      writeValueWithResponse: async (data: Uint8Array) => {
+        const text = new TextDecoder().decode(data);
+        const parsed = JSON.parse(text);
+        if (parsed.cmd === 'girar') comandoGiroRecibido = true;
+      },
+    },
+    server: { connected: true },
+    device: {},
+    reintentos: 0,
+    desconectadoManualmente: false,
+  });
+
+  await bleManager.solicitarGiro('incuba-test-nomotor');
+  assert(comandoGiroRecibido, 'Comando "girar" despachado por BLE sin errores');
+  assert(bleManager.estaConectado('incuba-test-nomotor'), 'Conexión BLE permanece activa y no se desconecta por ausencia de driver de motor');
+
+  // --------------------------------------------------------------------------
   // RESUMEN FINAL
   // --------------------------------------------------------------------------
   console.log('\n================================================================');
