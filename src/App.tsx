@@ -76,6 +76,16 @@ export default function App() {
   // Indicador visual de Sync BLE
   const [isSyncing, setIsSyncing] = useState<boolean>(false);
 
+  // Notificaciones no bloqueantes (en sustitución de window.alert)
+  const [toast, setToast] = useState<{ tipo: 'error' | 'exito' | 'info'; texto: string } | null>(null);
+
+  const mostrarToast = useCallback((texto: string, tipo: 'error' | 'exito' | 'info' = 'error') => {
+    setToast({ texto, tipo });
+    setTimeout(() => {
+      setToast((actual) => (actual?.texto === texto ? null : actual));
+    }, 4500);
+  }, []);
+
   // Registro de alertas previas para evitar repetir sonido en cada notificación
   const prevAlertasRef = useRef<Record<string, number>>({});
 
@@ -290,9 +300,10 @@ export default function App() {
     // Dispositivo BLE real: comando compacto de escritura
     try {
       await bleManager.enviarComando(configId, { cmd: 'girar' });
+      mostrarToast('Comando de volteo enviado al ESP32.', 'exito');
     } catch (e: any) {
       console.warn('Error enviando comando BLE de giro:', e);
-      alert(`No se pudo enviar el comando BLE de giro: ${e?.message || 'Error de comunicación'}`);
+      mostrarToast(`No se pudo enviar el comando BLE de giro: ${e?.message || 'Error de comunicación'}`, 'error');
     }
   };
 
@@ -331,9 +342,10 @@ export default function App() {
     // Dispositivo BLE real
     try {
       await bleManager.enviarComando(configId, act === 'auto' ? { cmd: 'auto' } : { act, v });
+      mostrarToast('Comando de actuador transmitido al ESP32.', 'exito');
     } catch (e: any) {
       console.warn('Error enviando comando BLE de actuador:', e);
-      alert(`No se pudo enviar el comando BLE de actuador: ${e?.message || 'Error de comunicación'}`);
+      mostrarToast(`No se pudo enviar el comando BLE de actuador: ${e?.message || 'Error de comunicación'}`, 'error');
     }
   };
 
@@ -370,15 +382,17 @@ export default function App() {
         };
       });
       sonarAlertaAdvertencia();
+      mostrarToast('Parámetros sincronizados correctamente.', 'exito');
       return;
     }
 
     try {
       await bleManager.sincronizarParametros(configId, params);
       sonarAlertaAdvertencia();
+      mostrarToast('Parámetros térmicos guardados en el ESP32.', 'exito');
     } catch (err: any) {
       console.warn('Error sincronizando parámetros con ESP32:', err);
-      alert(`No se pudo sincronizar con el ESP32: ${err?.message || 'Error BLE'}`);
+      mostrarToast(`No se pudo sincronizar con el ESP32: ${err?.message || 'Error BLE'}`, 'error');
     }
   };
 
@@ -402,13 +416,15 @@ export default function App() {
           },
         };
       });
+      mostrarToast(`Día fijado en ${dia}.`, 'exito');
       return;
     }
 
     try {
       await bleManager.fijarDia(configId, dia);
+      mostrarToast(`Día fijado en ${dia} en el ESP32.`, 'exito');
     } catch (err: any) {
-      alert(`No se pudo fijar el día en el ESP32: ${err?.message || 'Error BLE'}`);
+      mostrarToast(`No se pudo fijar el día en el ESP32: ${err?.message || 'Error BLE'}`, 'error');
     }
   };
 
@@ -432,13 +448,15 @@ export default function App() {
           },
         };
       });
+      mostrarToast('Contador reiniciado a Día 1.', 'exito');
       return;
     }
 
     try {
       await bleManager.reiniciarDias(configId);
+      mostrarToast('Contador reiniciado a Día 1 en el ESP32.', 'exito');
     } catch (err: any) {
-      alert(`No se pudo reiniciar días en el ESP32: ${err?.message || 'Error BLE'}`);
+      mostrarToast(`No se pudo reiniciar días en el ESP32: ${err?.message || 'Error BLE'}`, 'error');
     }
   };
 
@@ -798,6 +816,30 @@ export default function App() {
           </div>
         </div>
       </footer>
+
+      {/* Toast no bloqueante de acciones del sistema */}
+      {toast && (
+        <div
+          role="status"
+          aria-live="polite"
+          className={`fixed bottom-6 right-6 z-50 max-w-sm px-4 py-3 rounded-2xl shadow-lg border text-xs font-semibold flex items-center justify-between gap-3 animate-in fade-in slide-in-from-bottom-3 duration-200 ${
+            toast.tipo === 'error'
+              ? 'bg-rose-50 dark:bg-rose-950/90 text-rose-700 dark:text-rose-200 border-rose-200 dark:border-rose-800'
+              : toast.tipo === 'exito'
+              ? 'bg-emerald-50 dark:bg-emerald-950/90 text-emerald-800 dark:text-emerald-200 border-emerald-200 dark:border-emerald-800'
+              : 'bg-stone-100 dark:bg-stone-800 text-stone-800 dark:text-stone-200 border-stone-300 dark:border-stone-700'
+          }`}
+        >
+          <span>{toast.texto}</span>
+          <button
+            onClick={() => setToast(null)}
+            className="p-1 rounded-lg hover:bg-black/5 dark:hover:bg-white/10 transition cursor-pointer text-stone-500 hover:text-stone-700 dark:hover:text-stone-200"
+            aria-label="Cerrar notificación"
+          >
+            ✕
+          </button>
+        </div>
+      )}
     </div>
   );
 }

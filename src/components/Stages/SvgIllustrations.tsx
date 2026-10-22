@@ -2,7 +2,7 @@ import React from 'react';
 
 /**
  * Ilustraciones vectoriales originales SVG en estilo limpio, educativo y con la paleta
- * terracota/crema de IncubaESP. Sin derechos de autor.
+ * terracota/crema de incuNOVA. Adaptadas a tema claro y tema nocturno.
  */
 
 // 1. ANATOMÍA DEL HUEVO
@@ -10,22 +10,22 @@ export const HuevoAnatomiaSvg: React.FC<{ className?: string }> = ({ className =
   <svg viewBox="0 0 540 380" className={className} xmlns="http://www.w3.org/2000/svg">
     <defs>
       <linearGradient id="anatShell" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#FFFBF5" />
-        <stop offset="100%" stop-color="#F2DFD3" />
+        <stop offset="0%" stopColor="#FFFBF5" />
+        <stop offset="100%" stopColor="#F2DFD3" />
       </linearGradient>
       <radialGradient id="anatYolk" cx="45%" cy="45%" r="60%">
-        <stop offset="0%" stop-color="#FFB347" />
-        <stop offset="70%" stop-color="#FF8C00" />
-        <stop offset="100%" stop-color="#D96800" />
+        <stop offset="0%" stopColor="#FFB347" />
+        <stop offset="70%" stopColor="#FF8C00" />
+        <stop offset="100%" stopColor="#D96800" />
       </radialGradient>
       <linearGradient id="anatAir" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%" stop-color="#E8F4F8" />
-        <stop offset="100%" stop-color="#D1E8F2" />
+        <stop offset="0%" stopColor="#E8F4F8" />
+        <stop offset="100%" stopColor="#D1E8F2" />
       </linearGradient>
     </defs>
 
     {/* Fondo suave */}
-    <rect width="540" height="380" rx="20" fill="#FAF5EF" />
+    <rect width="540" height="380" rx="20" className="fill-[#FAF5EF] dark:fill-stone-900 transition-colors" />
 
     {/* Cáscara externa (Huevo horizontal) */}
     <path
@@ -60,33 +60,32 @@ export const HuevoAnatomiaSvg: React.FC<{ className?: string }> = ({ className =
       d="M 140 190 Q 155 180 170 190 T 200 190"
       fill="none"
       stroke="#FFFFFF"
-      strokeWidth="5"
+      strokeWidth="3.5"
       strokeLinecap="round"
     />
     <path
-      d="M 320 190 Q 345 180 370 190 T 400 190"
+      d="M 320 190 Q 345 180 370 190 T 405 190"
       fill="none"
       stroke="#FFFFFF"
-      strokeWidth="5"
+      strokeWidth="3.5"
       strokeLinecap="round"
     />
 
-    {/* Yema central (vitelo) */}
-    <circle cx="260" cy="190" r="54" fill="url(#anatYolk)" stroke="#D46A00" strokeWidth="2.5" />
+    {/* Yema de huevo con disco germinal */}
+    <circle cx="260" cy="190" r="55" fill="url(#anatYolk)" stroke="#D96800" strokeWidth="2" />
 
-    {/* Disco germinal / Blastodisco fértil (anillo diana) */}
-    <circle cx="255" cy="155" r="9" fill="#FFF5EB" stroke="#C84724" strokeWidth="2" />
-    <circle cx="255" cy="155" r="4" fill="#C84724" />
+    {/* Blastodermo (disco germinal fecundado - huevo fértil en ojo de buey) */}
+    <circle cx="260" cy="148" r="8" fill="#FFF5EA" stroke="#C84724" strokeWidth="2" />
+    <circle cx="260" cy="148" r="3" fill="#C84724" />
 
-    {/* Indicadores y Etiquetas */}
-    {/* Blastodisco */}
-    <line x1="255" y1="145" x2="255" y2="45" stroke="#C84724" strokeWidth="1.5" strokeDasharray="3 3" />
-    <circle cx="255" cy="45" r="3" fill="#C84724" />
-    <rect x="180" y="24" width="150" height="22" rx="6" fill="#C84724" />
-    <text x="255" y="39" textAnchor="middle" fill="#FFFFFF" fontSize="11" fontWeight="bold">Disco germinal (fértil)</text>
+    {/* LÍNEAS TÉCNICAS Y ETIQUETAS */}
+    {/* Blastodermo */}
+    <line x1="260" y1="140" x2="260" y2="40" stroke="#C84724" strokeWidth="1.5" strokeDasharray="3 3" />
+    <rect x="170" y="25" width="180" height="24" rx="6" fill="#C84724" />
+    <text x="260" y="41" textAnchor="middle" fill="#FFFFFF" fontSize="11" fontWeight="bold">Disco Germinal Fértil (Ojo de buey)</text>
 
     {/* Cámara de aire */}
-    <line x1="435" y1="180" x2="495" y2="80" stroke="#488B9E" strokeWidth="1.5" strokeDasharray="3 3" />
+    <line x1="430" y1="160" x2="470" y2="80" stroke="#488B9E" strokeWidth="1.5" strokeDasharray="3 3" />
     <rect x="420" y="58" width="105" height="22" rx="6" fill="#488B9E" />
     <text x="472" y="73" textAnchor="middle" fill="#FFFFFF" fontSize="11" fontWeight="bold">Cámara de aire</text>
 
@@ -111,7 +110,7 @@ export const HuevoAnatomiaSvg: React.FC<{ className?: string }> = ({ className =
 export const EmbrionDiasClaveSvg: React.FC<{ diaSeleccionado?: number }> = ({ diaSeleccionado = 7 }) => (
   <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
     {/* Día 3 */}
-    <div className={`rounded-2xl p-3 border text-center transition ${diaSeleccionado <= 3 ? 'border-[#E05A36] bg-[#FFF5F0]' : 'border-stone-200 bg-white'}`}>
+    <div className={`rounded-2xl p-3 border text-center transition ${diaSeleccionado <= 3 ? 'border-[#E05A36] bg-[#FFF5F0] dark:bg-stone-800/90' : 'border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-800/50'}`}>
       <svg viewBox="0 0 160 160" className="w-full h-28 mx-auto">
         <ellipse cx="80" cy="80" rx="65" ry="50" fill="#FFF9F5" stroke="#E2C9B8" strokeWidth="2"/>
         <circle cx="80" cy="80" r="32" fill="#FFA533" opacity="0.85"/>
@@ -121,12 +120,12 @@ export const EmbrionDiasClaveSvg: React.FC<{ diaSeleccionado?: number }> = ({ di
         <path d="M 75 76 Q 85 70 95 73 T 100 80" fill="none" stroke="#C84724" strokeWidth="1.5"/>
         <circle cx="75" cy="76" r="8" fill="none" stroke="#C84724" strokeWidth="1" strokeDasharray="2 2"/>
       </svg>
-      <div className="text-xs font-bold text-[#E05A36] mt-1">DÍA 3</div>
-      <div className="text-[11px] text-stone-600 font-medium">Primer latido cardíaco e islas vasculares tempranas.</div>
+      <div className="text-xs font-bold text-[#E05A36] dark:text-[#FF7A50] mt-1">DÍA 3</div>
+      <div className="text-[11px] text-stone-600 dark:text-stone-300 font-medium">Primer latido cardíaco e islas vasculares tempranas.</div>
     </div>
 
     {/* Día 7 */}
-    <div className={`rounded-2xl p-3 border text-center transition ${diaSeleccionado > 3 && diaSeleccionado <= 10 ? 'border-[#E05A36] bg-[#FFF5F0]' : 'border-stone-200 bg-white'}`}>
+    <div className={`rounded-2xl p-3 border text-center transition ${diaSeleccionado > 3 && diaSeleccionado <= 10 ? 'border-[#E05A36] bg-[#FFF5F0] dark:bg-stone-800/90' : 'border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-800/50'}`}>
       <svg viewBox="0 0 160 160" className="w-full h-28 mx-auto">
         <ellipse cx="80" cy="80" rx="65" ry="50" fill="#FFF9F5" stroke="#E2C9B8" strokeWidth="2"/>
         <circle cx="75" cy="80" r="35" fill="#FF9A26" opacity="0.6"/>
@@ -140,12 +139,12 @@ export const EmbrionDiasClaveSvg: React.FC<{ diaSeleccionado?: number }> = ({ di
         <circle cx="68" cy="71" r="3.5" fill="#1A1A1A"/>
         <circle cx="69" cy="70" r="1" fill="#FFFFFF"/>
       </svg>
-      <div className="text-xs font-bold text-[#E05A36] mt-1">DÍA 7</div>
-      <div className="text-[11px] text-stone-600 font-medium">Ojo visible y densa red vascular en forma de araña.</div>
+      <div className="text-xs font-bold text-[#E05A36] dark:text-[#FF7A50] mt-1">DÍA 7</div>
+      <div className="text-[11px] text-stone-600 dark:text-stone-300 font-medium">Ojo visible y densa red vascular en forma de araña.</div>
     </div>
 
     {/* Día 14 */}
-    <div className={`rounded-2xl p-3 border text-center transition ${diaSeleccionado > 10 && diaSeleccionado <= 17 ? 'border-[#E05A36] bg-[#FFF5F0]' : 'border-stone-200 bg-white'}`}>
+    <div className={`rounded-2xl p-3 border text-center transition ${diaSeleccionado > 10 && diaSeleccionado <= 17 ? 'border-[#E05A36] bg-[#FFF5F0] dark:bg-stone-800/90' : 'border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-800/50'}`}>
       <svg viewBox="0 0 160 160" className="w-full h-28 mx-auto">
         <ellipse cx="80" cy="80" rx="65" ry="50" fill="#FFF9F5" stroke="#E2C9B8" strokeWidth="2"/>
         {/* Mitad oscura */}
@@ -156,12 +155,12 @@ export const EmbrionDiasClaveSvg: React.FC<{ diaSeleccionado?: number }> = ({ di
         <path d="M 70 75 Q 85 80 90 92" stroke="#DDAA88" strokeWidth="3" fill="none" strokeLinecap="round"/>
         <circle cx="65" cy="70" r="4" fill="#201510"/>
       </svg>
-      <div className="text-xs font-bold text-[#E05A36] mt-1">DÍA 14</div>
-      <div className="text-[11px] text-stone-600 font-medium">Plumas y pico formados. Más de la mitad del huevo es opaco.</div>
+      <div className="text-xs font-bold text-[#E05A36] dark:text-[#FF7A50] mt-1">DÍA 14</div>
+      <div className="text-[11px] text-stone-600 dark:text-stone-300 font-medium">Plumas y pico formados. Más de la mitad del huevo es opaco.</div>
     </div>
 
     {/* Día 18 */}
-    <div className={`rounded-2xl p-3 border text-center transition ${diaSeleccionado >= 18 ? 'border-[#E05A36] bg-[#FFF5F0]' : 'border-stone-200 bg-white'}`}>
+    <div className={`rounded-2xl p-3 border text-center transition ${diaSeleccionado >= 18 ? 'border-[#E05A36] bg-[#FFF5F0] dark:bg-stone-800/90' : 'border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-800/50'}`}>
       <svg viewBox="0 0 160 160" className="w-full h-28 mx-auto">
         <ellipse cx="80" cy="80" rx="65" ry="50" fill="#3D1810" stroke="#E2C9B8" strokeWidth="2"/>
         {/* Cámara de aire limpia bien delimitada */}
@@ -170,8 +169,8 @@ export const EmbrionDiasClaveSvg: React.FC<{ diaSeleccionado?: number }> = ({ di
         <polygon points="108,74 116,77 109,82" fill="#E89E30"/>
         <circle cx="98" cy="74" r="3" fill="#111111"/>
       </svg>
-      <div className="text-xs font-bold text-[#E05A36] mt-1">DÍA 18 (LOCKDOWN)</div>
-      <div className="text-[11px] text-stone-600 font-medium">Embrión ocupa el 90%. Pico orientado a la cámara de aire.</div>
+      <div className="text-xs font-bold text-[#E05A36] dark:text-[#FF7A50] mt-1">DÍA 18 (LOCKDOWN)</div>
+      <div className="text-[11px] text-stone-600 dark:text-stone-300 font-medium">Embrión ocupa el 90%. Pico orientado a la cámara de aire.</div>
     </div>
   </div>
 );
@@ -180,7 +179,7 @@ export const EmbrionDiasClaveSvg: React.FC<{ diaSeleccionado?: number }> = ({ di
 export const OvoscopiaGuiaSvg: React.FC = () => (
   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
     {/* Infértil / Claro */}
-    <div className="rounded-2xl p-3 bg-stone-900 text-white flex flex-col items-center">
+    <div className="rounded-2xl p-3 bg-stone-900 border border-stone-800 text-white flex flex-col items-center">
       <div className="relative w-28 h-36 rounded-full bg-amber-500/30 border-2 border-amber-400/40 flex items-center justify-center overflow-hidden my-2 shadow-[0_0_25px_rgba(251,191,36,0.3)]">
         <div className="w-14 h-14 rounded-full bg-amber-400/50 blur-xs"></div>
         <div className="absolute bottom-2 text-[10px] text-amber-200 font-mono">100% TRASLÚCIDO</div>
@@ -190,7 +189,7 @@ export const OvoscopiaGuiaSvg: React.FC = () => (
     </div>
 
     {/* Fértil Día 7 (Araña) */}
-    <div className="rounded-2xl p-3 bg-stone-900 text-white flex flex-col items-center">
+    <div className="rounded-2xl p-3 bg-stone-900 border border-stone-800 text-white flex flex-col items-center">
       <div className="relative w-28 h-36 rounded-full bg-amber-600/40 border-2 border-emerald-400/60 flex items-center justify-center overflow-hidden my-2 shadow-[0_0_25px_rgba(16,185,129,0.3)]">
         <svg viewBox="0 0 100 130" className="w-full h-full">
           {/* Cámara de aire tenue arriba */}
@@ -209,7 +208,7 @@ export const OvoscopiaGuiaSvg: React.FC = () => (
     </div>
 
     {/* Anillo de Sangre (Muerte temprana) */}
-    <div className="rounded-2xl p-3 bg-stone-900 text-white flex flex-col items-center">
+    <div className="rounded-2xl p-3 bg-stone-900 border border-stone-800 text-white flex flex-col items-center">
       <div className="relative w-28 h-36 rounded-full bg-amber-700/40 border-2 border-rose-500/60 flex items-center justify-center overflow-hidden my-2 shadow-[0_0_25px_rgba(244,63,94,0.3)]">
         <svg viewBox="0 0 100 130" className="w-full h-full">
           {/* Anillo de sangre circular estancado sin red viva */}
@@ -223,7 +222,7 @@ export const OvoscopiaGuiaSvg: React.FC = () => (
     </div>
 
     {/* Día 18 Maduro (Lockdown) */}
-    <div className="rounded-2xl p-3 bg-stone-900 text-white flex flex-col items-center">
+    <div className="rounded-2xl p-3 bg-stone-900 border border-stone-800 text-white flex flex-col items-center">
       <div className="relative w-28 h-36 rounded-full bg-stone-950 border-2 border-sky-400/60 flex items-center justify-center overflow-hidden my-2 shadow-[0_0_25px_rgba(56,189,248,0.3)]">
         <svg viewBox="0 0 100 130" className="w-full h-full">
           {/* Cámara de aire nítida superior */}
@@ -242,7 +241,7 @@ export const OvoscopiaGuiaSvg: React.FC = () => (
 // 4. POSICIÓN ANTES DE ECLOSIÓN (PIPPING INTERNO)
 export const PippingInternoSvg: React.FC<{ className?: string }> = ({ className = 'w-full max-w-md mx-auto' }) => (
   <svg viewBox="0 0 400 280" className={className} xmlns="http://www.w3.org/2000/svg">
-    <rect width="400" height="280" rx="16" fill="#FDFBF7" stroke="#EAE1D8" strokeWidth="1.5"/>
+    <rect width="400" height="280" rx="16" className="fill-[#FDFBF7] dark:fill-stone-900 stroke-[#EAE1D8] dark:stroke-stone-800 transition-colors" strokeWidth="1.5"/>
     
     {/* Contorno del huevo */}
     <path
@@ -289,7 +288,7 @@ export const PippingInternoSvg: React.FC<{ className?: string }> = ({ className 
 // 5. POLLITO ECLOSIONANDO (PIPPING EXTERNO Y SALIDA)
 export const EclosionActivaSvg: React.FC<{ className?: string }> = ({ className = 'w-full max-w-md mx-auto' }) => (
   <svg viewBox="0 0 400 280" className={className} xmlns="http://www.w3.org/2000/svg">
-    <rect width="400" height="280" rx="16" fill="#FDFBF7" stroke="#EAE1D8" strokeWidth="1.5"/>
+    <rect width="400" height="280" rx="16" className="fill-[#FDFBF7] dark:fill-stone-900 stroke-[#EAE1D8] dark:stroke-stone-800 transition-colors" strokeWidth="1.5"/>
 
     {/* Mitad inferior del cascarón roto */}
     <path
